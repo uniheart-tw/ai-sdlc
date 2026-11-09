@@ -1,0 +1,45 @@
+# ---- 私人開發工具（獨立 repo，嚴禁進本專案版控，不公開）----
+/ai-dev-tools/
+
+# ---- 環境變數（SMTP 帳密等敏感值，嚴禁進版控）----
+.env
+.env.*
+**/.env
+!.env.example
+!**/.env.example
+.config
+
+# ---- 上傳的會議紀錄（含與會人員個資）----
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# ---- 資料庫 ----
+*.db
+*.sqlite
+*.sqlite3
+
+# ---- Python ----
+.venv/
+__pycache__/
+*.py[cod]
+.hypothesis/
+.pytest_cache/
+.coverage
+
+# ---- 金鑰 / 憑證（嚴禁進版控）----
+*.pem
+*.key
+*.crt
+*.p12
+
+# ---- 編輯器 / 系統 ----
+.DS_Store
+.vscode/
+.idea/
+
+# ---- AI 暫存工作區：忽略，但保留 user_reps（原始需求進版控，讓 demo 可追溯）----
+temp/*
+!temp/user_reps/
+
+# ---- Kiro workflow 產物 ----
+.agents/
