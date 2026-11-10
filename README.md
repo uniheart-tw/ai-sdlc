@@ -228,7 +228,7 @@ git push -u origin demo/run-1
 - `hook git-issue-resolve <N>` 會從目前分支的最新 commit 切出 `feature/.../issue-N`，所以要先切到 `demo/run-1`。
 - 開 PR 時指定它當 base：`hook pr-message demo/run-1`，把 PR 合併進 `demo/run-1`，**不要合進 `develop`**。
 
-`develop` 和 `demo-baseline` 因此永遠保持乾淨。想回顧某次展示，保留 `demo/run-1` 就是完整的紀錄。
+`develop` 和 `demo-baseline` 因此永遠保持乾淨。展示結束後，`demo/run-1` 與所有 feature 分支都會在 (3) 清掉。
 
 **(3) 展示完：回到初始狀態**
 
@@ -246,22 +246,46 @@ git status --short                    # 被追蹤的檔案應該是乾淨的
 - `temp/user_reps/` 底下的**所有**需求檔都會被 `git-issues` 當成輸入。換展示題材時，只留這一輪要用的需求檔。`temp/` 不進版控，`git checkout` 還原不了它，要重複使用的需求請另存備份。
 - 展示中如果上傳過檔案，`backend/uploads/` 內會留有資料，用 `rm -rf backend/uploads/*` 清掉（`.gitkeep` 不受影響）。
 
-接著清掉這一輪在 GitHub 與分支上留下的東西。GitHub 上的清理和本機工作目錄無關，切換分支前後都可以做；唯一的順序限制就是上面說的：本機分支要在切回 `develop` 之後才能刪。
+接著清掉這一輪在 GitHub 與分支上留下的東西：關閉所有 open Issue，刪除展示分支 `demo/*` 與 `git-issue-resolve` 建立的所有 `feature/*` 分支（本機與遠端）。GitHub 上的清理和本機工作目錄無關，切換分支前後都可以做；唯一的順序限制就是上面說的：本機分支要在切回 `develop` 之後才能刪。
 
 ```bash
 git fetch --prune                                              # 先同步遠端分支清單
 
-gh issue list --state open --json number --jq '.[].number'     # 先看有哪些 Issue
+# 1. 關閉所有 open Issue
+gh issue list --state open --json number,title --jq '.[] | "#\(.number) \(.title)"'   # 先看清單
 gh issue list --state open --json number --jq '.[].number' | xargs -I{} gh issue close {}
 
-git branch -r --list 'origin/feature/*' 'origin/demo/*'        # 先看有哪些遠端分支
-git push origin --delete demo/run-1                            # 逐一刪除不再需要的遠端分支
+# 2. 刪除遠端的展示分支與 feature 分支
+git branch -r -v --list 'origin/feature/*' 'origin/demo/*'     # 先看清單，並記下每個分支的 commit
+git branch -r --list 'origin/feature/*' 'origin/demo/*' | sed 's|origin/||' | xargs git push origin --delete
 
-git branch --list 'feature/*' 'demo/*'                         # 本機的展示分支
-git branch -D demo/run-1                                       # 逐一刪除
+# 3. 刪除本機的同名分支
+git branch -v --list 'feature/*' 'demo/*'
+git branch --list 'feature/*' 'demo/*' | xargs git branch -D
+
+# 4. 確認只剩 develop 與 main
+git branch -a
 ```
 
-刪除分支前，先確認清單裡沒有你要保留的展示紀錄。
+- **刪除前先看清單**：第 2、3 步會刪掉清單中的**所有**分支。清單裡有要保留的展示紀錄時，改成逐一刪除（`git push origin --delete <分支>`、`git branch -D <分支>`）。
+- **刪錯了可以重建**：分支只是指向 commit 的名稱，commit 本身還在。用清單裡記下的 commit 重建，例如 `git branch demo/run-1 7e5af91 && git push -u origin demo/run-1`。
+- 清單為空時，`xargs` 不會執行後面的指令，重複執行也沒有關係。
+
+**(4) 基準更新時：移動 tag**
+
+`develop` 上有新的基準內容（例如新增 `docs/courses/` 的課程文件）時，要把 `demo-baseline` 移到最新的 commit，下一輪從 tag 開出的展示分支才會包含它：
+
+```bash
+git checkout develop && git pull
+git status --short                          # 工作目錄應該是乾淨的（新內容都已提交並推送）
+git tag -f demo-baseline                    # 把本機 tag 移到目前的 HEAD
+git ls-tree -r --name-only demo-baseline    # 確認 tag 內含新的基準內容
+git push --force origin demo-baseline       # 只強制推送這一個 tag，不影響任何分支
+```
+
+- 強制推送要**明確寫出 tag 名稱**，不要用 `git push --force --tags`。
+- 其他已經抓過舊 tag 的電腦，要執行 `git fetch --tags --force` 才會更新。
+- 一定要在新內容都提交之後才移動 tag；之後再改的內容不會自動進到 tag 裡。
 
 **GitHub 端無法真正重置**
 
@@ -363,7 +387,7 @@ ai-sdlc/
 
 | 想了解 | 看這份 |
 |--------|--------|
-| 課程的詳細內容 | [docs/courses/](./docs/courses/) |
+| 課程的詳細內容 | [docs/courses/AI-SDLC-實戰課程.md](./docs/courses/AI-SDLC-實戰課程.md) |
 | 要準備什麼、怎麼安裝 | 本文「前置條件」「安裝設定」 |
 | 怎麼跑完一輪 AI-SDLC | 本文「準備原始需求」「常用指令」 |
 | 展示完怎麼回到初始狀態 | 本文「安裝設定」第 9 步「版控管理」 |

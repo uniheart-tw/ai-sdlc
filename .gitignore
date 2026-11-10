@@ -49,3 +49,4 @@ docs/api/openapi.yaml
 
 # ---- Kiro workflow 產物 ----
 .agents/
+.kiro/

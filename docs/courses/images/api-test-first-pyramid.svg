@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 490" width="1240" height="490" role="img" aria-labelledby="title desc">
+  <title id="title">API Test First 在測試金字塔中的位置</title>
+  <desc id="desc">測試金字塔的中間層是整合與 API 測試，也就是 API Test First，它的測試從 API 契約推導，與實作獨立。底層的單元測試由 TDD 驅動，它的測試從實作程式碼推導，可能遷就實作。</desc>
+  <style>
+    text { font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif; fill: #202124; }
+    .layer { font-size: 21px; font-weight: 700; }
+    .layer-w { font-size: 21px; font-weight: 700; fill: #ffffff; }
+    .sub-w { font-size: 16px; fill: #ffffff; }
+    .sub { font-size: 16px; }
+    .box { font-size: 18px; font-weight: 700; }
+    .box-sub { font-size: 14px; fill: #3c4043; }
+    .edge { font-size: 15px; fill: #5f6368; }
+    .note-b { font-size: 17px; font-weight: 700; }
+    .note { font-size: 15px; fill: #3c4043; }
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5f6368"/>
+    </marker>
+  </defs>
+
+  <polygon points="620,40 707,160 533,160" fill="#DADCE0" stroke="#fff" stroke-width="3"/>
+  <text class="layer" x="620" y="138" text-anchor="middle">E2E / UI</text>
+
+  <polygon points="533,160 707,160 808.5,300 431.5,300" fill="#1A73E8" stroke="#fff" stroke-width="3"/>
+  <text class="layer-w" x="620" y="220" text-anchor="middle">整合 / API 測試</text>
+  <text class="sub-w" x="620" y="250" text-anchor="middle">← API Test First</text>
+
+  <polygon points="431.5,300 808.5,300 910,440 330,440" fill="#A8DAB5" stroke="#fff" stroke-width="3"/>
+  <text class="layer" x="620" y="362" text-anchor="middle">單元測試</text>
+  <text class="sub" x="620" y="392" text-anchor="middle">← TDD</text>
+
+  <rect x="40" y="198" width="230" height="64" rx="10" fill="#E8F0FE" stroke="#1A73E8" stroke-width="2"/>
+  <text class="box" x="155" y="226" text-anchor="middle">API 契約</text>
+  <text class="box-sub" x="155" y="249" text-anchor="middle">（SDD 的產物）</text>
+  <line x1="272" y1="230" x2="476" y2="230" stroke="#5f6368" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#a)"/>
+  <text class="edge" x="374" y="220" text-anchor="middle">推導</text>
+
+  <rect x="40" y="338" width="230" height="64" rx="10" fill="#F1F3F4" stroke="#5f6368" stroke-width="2"/>
+  <text class="box" x="155" y="366" text-anchor="middle">實作程式碼</text>
+  <text class="box-sub" x="155" y="389" text-anchor="middle">（同一個人或 AI 寫的）</text>
+  <line x1="272" y1="370" x2="374" y2="370" stroke="#5f6368" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#a)"/>
+  <text class="edge" x="323" y="360" text-anchor="middle">推導</text>
+
+  <text class="note-b" x="850" y="222">與實作獨立</text>
+  <text class="note" x="850" y="246">從契約出題，不會遷就實作</text>
+
+  <text class="note-b" x="935" y="362">可能遷就實作</text>
+  <text class="note" x="935" y="386">自己出題自己考</text>
+</svg>

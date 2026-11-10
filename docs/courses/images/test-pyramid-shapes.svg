@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 430" width="1040" height="430" role="img" aria-labelledby="title desc">
+  <title id="title">測試組合的三種形狀</title>
+  <desc id="desc">左：建議的測試金字塔，上窄下寬，單元測試最多。中：冰淇淋甜筒反模式，上寬下窄，大量手動與 E2E 測試、單元測試很少。右：Testing Trophy 與 Testing Honeycomb，中間最寬，整合測試最多。</desc>
+  <style>
+    text { font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif; fill: #202124; }
+    .title { font-size: 20px; font-weight: 700; }
+    .tag { font-size: 14px; font-weight: 700; }
+    .lbl { font-size: 14px; }
+    .cap { font-size: 14px; fill: #3c4043; }
+  </style>
+
+  <!-- 測試金字塔 -->
+  <g transform="translate(20,0)">
+    <text class="title" x="150" y="34" text-anchor="middle">測試金字塔</text>
+    <rect x="105" y="46" width="90" height="24" rx="12" fill="#1E8E3E"/>
+    <text class="tag" x="150" y="63" text-anchor="middle" style="fill:#ffffff">建議</text>
+    <polygon points="150,90 196,160 104,160" fill="#F6AEA9" stroke="#fff" stroke-width="3"/>
+    <text class="lbl" x="150" y="148" text-anchor="middle">E2E</text>
+    <polygon points="104,160 196,160 242,230 58,230" fill="#FDE293" stroke="#fff" stroke-width="3"/>
+    <text class="lbl" x="150" y="200" text-anchor="middle">整合 / API</text>
+    <polygon points="58,230 242,230 288,300 12,300" fill="#A8DAB5" stroke="#fff" stroke-width="3"/>
+    <text class="lbl" x="150" y="270" text-anchor="middle">單元</text>
+    <text class="cap" x="150" y="340" text-anchor="middle">上窄下寬</text>
+    <text class="cap" x="150" y="362" text-anchor="middle">單元測試最多，又快又穩定</text>
+  </g>
+
+  <!-- 冰淇淋甜筒 -->
+  <g transform="translate(370,0)">
+    <text class="title" x="150" y="34" text-anchor="middle">冰淇淋甜筒</text>
+    <rect x="100" y="46" width="100" height="24" rx="12" fill="#D93025"/>
+    <text class="tag" x="150" y="63" text-anchor="middle" style="fill:#ffffff">反模式</text>
+    <path d="M40,150 A110,62 0 0 1 260,150 Z" fill="#F6AEA9" stroke="#fff" stroke-width="3"/>
+    <text class="lbl" x="150" y="132" text-anchor="middle">手動測試</text>
+    <polygon points="40,150 260,150 228,200 72,200" fill="#F6AEA9" stroke="#fff" stroke-width="3"/>
+    <text class="lbl" x="150" y="181" text-anchor="middle">E2E</text>
+    <polygon points="72,200 228,200 190,250 110,250" fill="#FDE293" stroke="#fff" stroke-width="3"/>
+    <text class="lbl" x="150" y="230" text-anchor="middle">整合</text>
+    <polygon points="110,250 190,250 150,300" fill="#A8DAB5" stroke="#fff" stroke-width="3"/>
+    <text class="lbl" x="150" y="274" text-anchor="middle">單元</text>
+    <text class="cap" x="150" y="340" text-anchor="middle">上寬下窄</text>
+    <text class="cap" x="150" y="362" text-anchor="middle">靠手動與 E2E，慢、脆弱、難維護</text>
+  </g>
+
+  <!-- Trophy / Honeycomb -->
+  <g transform="translate(720,0)">
+    <text class="title" x="150" y="34" text-anchor="middle">Trophy / Honeycomb</text>
+    <rect x="80" y="46" width="140" height="24" rx="12" fill="#1A73E8"/>
+    <text class="tag" x="150" y="63" text-anchor="middle" style="fill:#ffffff">整合為主</text>
+    <polygon points="110,90 190,90 205,130 95,130" fill="#F6AEA9" stroke="#fff" stroke-width="3"/>
+    <text class="lbl" x="150" y="116" text-anchor="middle">E2E</text>
+    <polygon points="95,130 205,130 270,190 205,250 95,250 30,190" fill="#FDE293" stroke="#fff" stroke-width="3"/>
+    <text class="lbl" x="150" y="186" text-anchor="middle">整合 / API</text>
+    <text class="lbl" x="150" y="208" text-anchor="middle">（最多）</text>
+    <polygon points="95,250 205,250 190,280 110,280" fill="#A8DAB5" stroke="#fff" stroke-width="3"/>
+    <text class="lbl" x="150" y="270" text-anchor="middle">單元</text>
+    <rect x="80" y="280" width="140" height="20" fill="#DADCE0" stroke="#fff" stroke-width="3"/>
+    <text class="cap" x="150" y="295" text-anchor="middle">靜態檢查</text>
+    <text class="cap" x="150" y="340" text-anchor="middle">中間最寬</text>
+    <text class="cap" x="150" y="362" text-anchor="middle">整合測試的投資報酬率最高</text>
+  </g>
+
+  <text class="cap" x="520" y="408" text-anchor="middle">Testing Trophy：Kent C. Dodds（前端）　Testing Honeycomb：Spotify（微服務）</text>
+</svg>

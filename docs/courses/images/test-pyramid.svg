@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 500" width="1040" height="500" role="img" aria-labelledby="title desc">
+  <title id="title">測試金字塔</title>
+  <desc id="desc">三層金字塔：頂端是 E2E 與 UI 測試，數量少；中間是整合與 API 測試，數量中等；底部是單元測試，數量最多。越往上越慢、越貴、越接近使用者；越往下越多、越快、越便宜。</desc>
+  <style>
+    text { font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif; fill: #202124; }
+    .layer { font-size: 22px; font-weight: 700; }
+    .sub { font-size: 15px; }
+    .tool { font-size: 13px; fill: #3c4043; }
+    .note { font-size: 17px; }
+    .note-b { font-size: 17px; font-weight: 700; }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5f6368"/>
+    </marker>
+  </defs>
+
+  <polygon points="330,40 417,160 243,160" fill="#F6AEA9" stroke="#ffffff" stroke-width="3"/>
+  <text class="layer" x="330" y="122" text-anchor="middle">E2E / UI</text>
+  <text class="sub" x="330" y="148" text-anchor="middle">少量</text>
+
+  <polygon points="243,160 417,160 518.5,300 141.5,300" fill="#FDE293" stroke="#ffffff" stroke-width="3"/>
+  <text class="layer" x="330" y="218" text-anchor="middle">整合 / API 測試</text>
+  <text class="sub" x="330" y="246" text-anchor="middle">中量・驗證元件之間與對外介面</text>
+  <text class="tool" x="330" y="272" text-anchor="middle">pytest + test_client、Schemathesis</text>
+
+  <polygon points="141.5,300 518.5,300 620,440 40,440" fill="#A8DAB5" stroke="#ffffff" stroke-width="3"/>
+  <text class="layer" x="330" y="360" text-anchor="middle">單元測試</text>
+  <text class="sub" x="330" y="388" text-anchor="middle">大量・驗證單一函式與類別的邏輯</text>
+  <text class="tool" x="330" y="414" text-anchor="middle">pytest、unittest</text>
+
+  <line x1="680" y1="60" x2="680" y2="420" stroke="#5f6368" stroke-width="3" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <text class="note-b" x="705" y="72">越往上</text>
+  <text class="note" x="705" y="98">越慢、越貴、越容易誤報</text>
+  <text class="note" x="705" y="124">越接近使用者真實的使用情境</text>
+
+  <text class="note-b" x="705" y="372">越往下</text>
+  <text class="note" x="705" y="398">數量越多、越快、越便宜、越穩定</text>
+  <text class="note" x="705" y="424">越接近程式內部</text>
+
+  <text class="tool" x="330" y="480" text-anchor="middle">Mike Cohn，《Succeeding with Agile》（2009）</text>
+</svg>
