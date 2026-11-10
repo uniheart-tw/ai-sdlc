@@ -628,15 +628,16 @@ flowchart LR
 
 | SDLC 階段 | Hook | 方法論 | 系統事先提供 | 每次收集的 context | model | 誰負責確認 |
 |-----------|------|-------|------------|------------------|-------|-----------|
-| 需求 / 設計 | `git-issues` | SDD（PRD、EARS） | PRD spec、EARS spec、Issue spec、prompt | GitHub 設定快照（不存在時自動建立） | auto | **全體人員**：審 PRD 與 Issue，dry-run 後上傳 |
-| 實作 | `git-issue-resolve` | TDD + Harness | prompt | issue、分支、前次進度 | auto | **不需要人**：測試全綠才算完成 |
+| 需求 / 設計 | `git-issues` | SDD（PRD、EARS） | `agent.md`（prompt 要求先讀）、PRD spec、EARS spec、Issue spec、prompt | GitHub 設定快照（不存在時自動建立） | auto | **全體人員**：審 PRD 與 Issue，dry-run 後上傳 |
+| 實作 | `git-issue-resolve` | TDD + Harness | `agent.md`（列入 `PROMPT.md` 的參考文件）、steering `api-first-workflow.md`、prompt | issue、分支、前次進度 | auto | **不需要人**：測試全綠才算完成 |
 | 測試 | flask-he（`run.sh`） | API Test First ＋ Harness | flask-he 設定檔、PROMPT 範本 | OpenAPI、Flask 路由、既有測試 | 依設定檔 | 視情況而定；**資淺工程師**執行最後的整合測試 |
 | 交付 | `commit-message` | Conventional Commits | prompt | git status / diff | haiku | 有 git 權限時直接提交；否則開發者按 y 確認 |
 | 交付 | `pr-message` | PR 模板 | PR 模板、prompt | 分支差異 | haiku | CI/CD 自動跑測試，**資深工程師**最後驗收、merge |
 
 > **Runner 是穩定的引擎，Hook 是可替換的任務。**
 > 上面每一列都是同一支 runner 在跑，差別只在三個檔案：`<name>.json`、`<name>.prompt.md`、`<name>.context.sh`。
-> 目前用上 steering 的是 `git-issue-resolve`：專案的 API-First 規範每次都會被注入 prompt。
+> 目前用上 steering 的是 `git-issue-resolve`：專案的 API-First 規範每次都會被注入 Hook 的 prompt。
+> `agent.md` 則沒有被注入，而是在 prompt 裡**要求 AI 去讀**：`git-issues` 明確要求先讀；`git-issue-resolve` 把它列進 `PROMPT.md` 的參考文件，交給 harness 每一輪的 AI 自行參考。
 
 ---
 
