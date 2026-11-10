@@ -1,10 +1,11 @@
 # ai-sdlc 專案相依（裝在 repo 根目錄的 .venv）
 # 安裝：uv venv --python 3.13 && source .venv/bin/activate && uv pip install -r requirements.txt
-# 寄信用標準庫 smtplib / email，不需額外套件。
+# 寄信（SES）與 LLM（Bedrock）皆透過 boto3，憑證使用本機 AWS profile。
 # flask-he 測試工具的套件另見 ai-dev-tools/scripts/flask/requirements.txt（不在本檔管理）。
 
 Flask==3.0.3
-python-dotenv==1.0.1          # 本機從 .env 載入 SMTP 設定
+python-dotenv==1.0.1          # 本機從 .env 載入環境變數
+boto3==1.43.127               # Bedrock（LLM）與 SES（寄信）
 
 # ── 測試（pytest；Flask 內建 test_client，不需額外 HTTP 測試套件）──
 # 執行：於 backend/ 下 `python -m pytest -q`
