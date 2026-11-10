@@ -1,0 +1,154 @@
+# backend/flask-he-config.yaml — flask-he 專案設定（ai-sdlc）
+# 來源：ai-dev-tools/harness-engineering/flask-he/templates/flask-he-config.template.yaml，已依 ai-sdlc 調整。
+# project.repo_root 是所有路徑的唯一入口；可寫絕對路徑，或相對於「本設定檔所在目錄」的相對路徑。
+# 本檔在 backend/ 下，`..` 即 repo 根目錄，不論 clone 到哪裡都不用改，可直接 commit 共用。
+# ${區塊.鍵} 由 read_config.py 展開。
+# 其他區塊的相對路徑以 project.backend_root 為基準，除非註明以 project.repo_root 為基準。
+#
+# 待確認（實作完成後對照程式碼）：
+#   - app.config_module / config_patches / config_overrides 的鍵名要與 backend/config.py 一致
+#   - external_stubs.patch 的寄信函式路徑要與實際 mail service 一致
+version: 1
+
+# ── 專案（入口）──────────────────────────────────────────────────────
+project:
+  repo_root: ..                        # 相對於本設定檔所在目錄（backend/）→ repo 根目錄；也可寫絕對路徑
+  backend_root: ${project.repo_root}/backend
+  python: ${project.repo_root}/.venv/bin/python      # venv 建在 repo 根目錄
+
+# ── run.sh 迭代設定 ──────────────────────────────────────────────────
+harness:
+  max_iterations: 10                   # 可被 --max-iterations 覆蓋
+  agent_command: kiro-cli
+  agent_args: [chat, --no-interactive, --trust-all-tools]
+
+# ── Flask app ───────────────────────────────────────────────────────
+app:
+  module: app                          # backend/app.py
+  factory: create_app                  # def create_app()
+  import_side_effects: false           # app.py 只在 __main__ 呼叫 create_app()，import 時無副作用
+  config_module: config                # backend/config.py
+  routes_dir: routes                   # view function 的原始碼目錄（get_context 用來定位檔案）
+  # 每個測試各自指到 tmp_path 的 config 屬性（測試之間互不影響）
+  config_patches:
+    UPLOAD_DIR: tmp_dir                # 會議紀錄上傳目錄（預設 backend/uploads）
+  config_overrides:                    # 測試時固定的值：指向本機假 SMTP，絕不連真實郵件伺服器
+    SMTP_HOST: localhost
+    SMTP_PORT: 1025
+    SMTP_USER: ""
+    SMTP_PASSWORD: ""
+    MAIL_FROM: meeting-bot@example.com
+
+# ── 測試執行環境（工具與 pytest 共用）────────────────────────────────────
+test_env:
+  # 測試專用的 session 目錄。工具 import app 前、pytest 載入 conftest 前，
+  # 都先把 config 的路徑指到這裡，任何寫法都碰不到開發資料。
+  root: /tmp/flask-he/ai-sdlc          # 絕對路徑；不得位於 project.repo_root 之內
+  db:
+    path: ${test_env.root}/session/tests.db
+    recreate_each_run: true            # 每次執行前刪除重建，執行之間不共用狀態
+  storage_dir: ${test_env.root}/session/storage   # 對應 config.UPLOAD_DIR
+  data_dir: ${test_env.root}/session/data
+  artifacts_dir: ${test_env.root}/artifacts        # junit.xml、coverage.json、.coverage 等暫存產物
+  # 提醒：測試資料由各測試在 Arrange 階段自行建立，不預先載入。
+  env_unset:                           # 執行 pytest 前移除，避免打到真實 SMTP
+    - SMTP_HOST
+    - SMTP_PORT
+    - SMTP_USER
+    - SMTP_PASSWORD
+    - MAIL_FROM
+    - OTEL_EXPORTER_OTLP_ENDPOINT
+  env_set:
+    OTEL_ENABLED: "0"
+
+# ── pytest 與覆蓋率 ──────────────────────────────────────────────────
+pytest:
+  extra_args: [-q, -p, no:cacheprovider]   # 不在 backend/ 產生 .pytest_cache
+coverage:
+  unit_source: ${unit.source_include}      # 單元：只量測單元對象範圍
+  integration_source: resource_view_functions   # 整合：資源所有端點的 view function（def 行到結尾）
+  data_file: ${test_env.artifacts_dir}/.coverage   # 不在 backend/ 產生 .coverage
+
+# ── API spec（整合測試的對象來源）────────────────────────────────────
+api:
+  openapi: docs/api/openapi.yaml       # 相對於 project.repo_root
+  endpoint_docs: docs/api/endpoint/    # 相對於 project.repo_root
+  prefix: /api                         # 整合測試的資源 = URL 路徑在 prefix 之後的第一段（/api/meetings/{id} → meetings）
+  exclude_endpoints:                   # app.view_functions 中不屬於 API spec 的 endpoint
+    - static
+    - health                           # GET /api/health 定義在 app.py，不在 openapi 中
+
+# ── 單元測試的對象範圍 ───────────────────────────────────────────────
+unit:
+  source_include:                      # 每個 .py 檔 = 一個單元測試對象（模組）
+    - services/**/*.py
+  source_exclude:
+    - routes/**                        # route 由整合測試涵蓋
+    - scripts/**
+    - tests/**
+    - "**/__init__.py"
+
+# ── 測試輸出位置（相對於 project.backend_root）──────────────────────────
+tests:
+  unit_dir: tests/unit
+  integration_dir: tests/integration
+  unit_file_pattern: "<unit_dir>/<module_path>/test_unit_<module_snake>.py"
+  integration_file_pattern: "<integration_dir>/<resource>/requests/NN_MM_<description>.json"   # 請求檔，由 flask_function_wrapper.py 執行
+  unit_report_file: tests/unit-test-case-report.md
+  integration_report_file: tests/integration-test-case-report.md
+  unit_scratchpad: "<unit_dir>/<module_path>/scratchpad.md"                 # 每個模組一份
+  integration_scratchpad: "<integration_dir>/<resource>/scratchpad.md"      # 每個資源一份
+  data_dir: tests/data                 # 測試資料（例如 sample_transcript.txt）
+  # 根 conftest（backend/tests/conftest.py）中可以沿用的 helper 與 fixture（ai-sdlc 無認證，目前沒有）
+  shared_helpers: []
+  shared_fixtures: []
+  # 沒有隔離資料的 client，生成的測試不得使用
+  forbidden_fixtures: [client]
+
+# ── 品質技術（marker 與 docstring 前綴）──────────────────────────────
+techniques:
+  - {marker: boundary,         label: 邊界值分析}
+  - {marker: equivalence,      label: 等價類劃分}
+  - {marker: decision_table,   label: 決策表}
+  - {marker: error_guessing,   label: 錯誤猜測}
+  - {marker: state_transition, label: 狀態轉換}
+
+# ── 外部服務 stub（測試中必須 mock，不得真的呼叫）──────────────────────
+external_stubs:
+  patch:                               # patch 成回傳 None：unit conftest 一律；integration 只在 wrapper --stub 時
+    - services.mail_service.send_mail  # 寄信的唯一出口（外部服務只透過 services/ 單一模組呼叫，見 agent.md）
+  forbidden_imports:                   # 測試檔不得直接 import
+    - smtplib
+    - requests
+    - socket
+
+# ── 門檻 ─────────────────────────────────────────────────────────────
+thresholds:
+  unit_coverage: 70                    # %
+  integration_coverage: 20             # %，agent 迴圈門檻；母體為資源所有端點的 view function
+  integration_coverage_target: 65      # %，開發者目標（建議 60–70），只在報告提醒，不擋 LOOP_COMPLETE
+  unit_test_time: 0.5                  # 秒，超過為 warning
+  integration_test_time: 1.0           # 秒，超過為 warning
+  unit_min_techniques: 3
+  integration_min_techniques: 3
+  integration_min_scenarios: 3
+  status_coverage:
+    require_2xx: true                  # 每個 op 至少一個 2xx
+    require_4xx_if_declared: true      # openapi 有宣告 4xx 時，至少命中一個
+    require_all_declared: false        # true 時所有宣告的狀態碼都要測到
+
+# ── 報告 ─────────────────────────────────────────────────────────────
+report:
+  env_packages: [python, flask, pytest, pytest-cov, coverage]   # 報告「測試環境」區塊列出的版本
+
+# ── 清除（run.sh --delete-test-files 用）────────────────────────────────
+cleanup:
+  generated_globs:                     # 只刪生成物，不刪既有測試與根 conftest
+    - tests/unit/**
+    - tests/integration/*/requests/**
+    - tests/integration/*/event_hooks.*
+    - tests/integration/*/scratchpad.md
+    - tests/unit-test-case-report.md
+    - tests/integration-test-case-report.md
+
+# check 開關與 severity 不放在這裡，放在工具內的 validate_config.yaml，強制套用，專案不可覆蓋。

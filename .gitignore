@@ -26,6 +26,11 @@ __pycache__/
 .pytest_cache/
 .coverage
 
+# ---- Node / 前端 ----
+frontend/node_modules/
+frontend/dist/
+npm-debug.log*
+
 # ---- 金鑰 / 憑證（嚴禁進版控）----
 *.pem
 *.key
@@ -37,9 +42,10 @@ __pycache__/
 .vscode/
 .idea/
 
-# ---- AI 暫存工作區：忽略，但保留 user_reps（原始需求進版控，讓 demo 可追溯）----
-temp/*
-!temp/user_reps/
+# ---- AI 暫存工作區，API_REFERENCE.md, openapi.yaml 都是中間產物：忽略）----
+/temp/*
+docs/api/API_REFERENCE.md
+docs/api/openapi.yaml
 
 # ---- Kiro workflow 產物 ----
 .agents/

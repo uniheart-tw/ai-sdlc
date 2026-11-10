@@ -1,0 +1,22 @@
+# 專案層級 API metadata（整個 repo 一份）。
+# 合併時由 build-reference.py 讀入，寫成 API_REFERENCE.md 檔首的 front matter；
+# 再由 md-to-openapi.py 取用，鍵名與 OpenAPI 相同、原樣寫入 openapi.yaml。
+# 修改本檔後要重新執行合併才會生效。
+
+info:
+  title: AI-SDLC Demo API
+  version: 1.0.0
+  description: AI-SDLC 示範專案的 Flask 後端 API。
+
+servers:
+  - url: http://localhost:5001
+    description: 本機 Flask 開發伺服器
+
+# 認證方式的定義。端點是否需要認證，由各端點 `### Request` 的 Headers 決定：
+#   有 `Authorization: Bearer ...` → 套用 BearerAuth
+#   沒有對應標頭                   → security: []（公開端點）
+securitySchemes:
+  BearerAuth:
+    type: http
+    scheme: bearer
+    description: "登入（POST /api/auth/login）取得 token，以 `Authorization: Bearer <token>` 帶入。"
