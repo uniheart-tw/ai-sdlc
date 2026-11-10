@@ -31,6 +31,8 @@
 | [`endpoint/courses.md`](./endpoint/courses.md) | `/api/courses/*` | 5 |
 | [`endpoint/reports.md`](./endpoint/reports.md) | `/api/reports/*` | 2 |
 | [`endpoint/taxonomies.md`](./endpoint/taxonomies.md) | `/api/taxonomies/*` | 4 |
+| [`endpoint/meeting.md`](./endpoint/meeting.md) | `/api/meeting-minute` | 1 |
+| [`endpoint/notify.md`](./endpoint/notify.md) | `/api/notify` | 1 |
 
 > `GET /api/health` 定義於 `backend/app.py`（非 Blueprint），不屬於任何 Blueprint 路徑群組。
 
