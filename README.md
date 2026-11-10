@@ -200,19 +200,18 @@ ls -l .kiro/steering/                                    # 應看到 api-first-w
 確認目前的內容就是你要的初始狀態後，在 `develop` 分支上用 Hook 提交，**提交完成後**再打 tag：
 
 ```bash
-git status --short                                        # 先確認要提交的內容，不應出現 .env、ai-dev-tools/
-hook commit-message                                       # AI 產生 temp/commit-msg.txt
-bash ai-dev-tools/scripts/commit-and-push.sh --no-push    # 確認檔案清單後按 y，只 commit、不 push
-git tag demo-baseline                                     # tag 要打在這個新 commit 上
-git ls-tree -r --name-only demo-baseline                  # 確認 tag 內含 agent.md、backend、docs 等基準檔案
-git push origin develop demo-baseline                     # 一次推送分支和 tag
+git status --short                          # 先確認要提交的內容，不應出現 .env、ai-dev-tools/
+hook commit-message                         # 有 git 權限時：add -A → commit → push 一次完成
+git log -1 --oneline                        # 確認 HEAD 就是剛才的基準 commit
+git tag demo-baseline                       # tag 打在這個 commit 上
+git ls-tree -r --name-only demo-baseline    # 確認 tag 內含 agent.md、backend、docs 等基準檔案
+git push origin demo-baseline               # 分支已被 Hook 推送，只需要再推 tag
 ```
 
-- `commit-and-push.sh` 會執行 `git add -A`，所以提交前先用 `git status --short` 確認沒有不想進基準的檔案；`.env`、`ai-dev-tools/`、`temp/` 等已被 `.gitignore` 排除。
-- `hook commit-message` 可能順手更新變更目錄裡的 `README.md` 並一起提交，提交前的檔案清單請看一眼。
-- 加 `--no-push` 是為了讓分支和 tag 一起推送；不加的話腳本會先推分支，tag 要再推一次。
-- 如果 Hook 依工作區權限已經直接替你 commit，就跳過 `commit-and-push.sh`，直接打 tag。
-- tag 一定要在 commit 之後才打。若不小心打在舊 commit 上，且還沒推到遠端，用 `git tag -f demo-baseline` 移到新 commit。
+- **Hook 不會等你確認**：有 git 權限時，`hook commit-message` 會直接 `git add -A`、commit 並 push 到目前分支，中間沒有確認檔案清單的步驟。所以務必先用 `git status --short` 檢查；`.env`、`ai-dev-tools/`、`temp/` 等已被 `.gitignore` 排除。
+- Hook 可能順手更新變更目錄裡的 `README.md` 並一起提交，所以基準內容可能和提交前略有不同，tag 之後用 `git ls-tree` 確認即可。
+- **tag 要在 commit 之後才打**。如果本機已經有舊的 `demo-baseline`（例如先前誤打在舊 commit 上），改用 `git tag -f demo-baseline` 移動它；只有在 tag **還沒推到遠端**時才能這樣做。
+- 如果 Hook 因權限被拒，會在終端提示改跑 `bash ai-dev-tools/scripts/commit-and-push.sh`；它會列出檔案清單並等你按 `y`。要讓分支和 tag 一起推送的話加 `--no-push`，最後改用 `git push origin develop demo-baseline`。
 
 **(2) 每次展示：開一條獨立的基底分支**
 
@@ -231,37 +230,36 @@ git push -u origin demo/run-1
 
 **(3) 展示完：回到初始狀態**
 
+先切回 `develop`。刪除本機的展示分支前一定要先做這一步，因為 Git 不能刪除目前所在的分支：
+
 ```bash
 git checkout develop
 git status --short                    # 被追蹤的檔案應該是乾淨的
 ```
 
-被忽略的本機產物要逐項清掉（先看清單再刪，不要用 `clean -fdx`）：
+本機被 `.gitignore` 排除的檔案**不需要清理**：`temp/`、`docs/api/API_REFERENCE.md`、`docs/api/openapi.yaml`，以及 `ai-dev-tools/` 內產生的暫存，都不影響下一輪執行。`git-issues` 開始時會自己清掉上一輪的 `temp/github-issues/` 與 `temp/user_reps_report/`，兩個生成物在重新跑 API-First 工具鏈時會被覆蓋。**請不要刪除 `ai-dev-tools/` 內的任何檔案。**
+
+只有兩件事要留意：
+
+- `temp/user_reps/` 底下的**所有**需求檔都會被 `git-issues` 當成輸入。換展示題材時，只留這一輪要用的需求檔。`temp/` 不進版控，`git checkout` 還原不了它，要重複使用的需求請另存備份。
+- 展示中如果上傳過檔案，`backend/uploads/` 內會留有資料，用 `rm -rf backend/uploads/*` 清掉（`.gitkeep` 不受影響）。
+
+接著清掉這一輪在 GitHub 與分支上留下的東西。GitHub 上的清理和本機工作目錄無關，切換分支前後都可以做；唯一的順序限制就是上面說的：本機分支要在切回 `develop` 之後才能刪。
 
 ```bash
-rm -rf temp/github-issues temp/user_reps_report      # git-issues 的產出
-rm -rf temp/user_reps/*                              # 展示用的原始需求（見下方提醒）
-rm -f docs/api/API_REFERENCE.md docs/api/openapi.yaml   # 生成物，需要時重新產生
-rm -rf backend/uploads/*                             # 執行期產生的上傳檔
-rm -rf ai-dev-tools/gh-issue/config                  # GitHub 設定快照，下次執行會自動重建
-rm -rf ai-dev-tools/harness-engineering/issues/issue-*  # git-issue-resolve 的迭代暫存
-```
+git fetch --prune                                              # 先同步遠端分支清單
 
-> 整個 `temp/` 都被 `.gitignore` 排除，所以需求檔**不在基準裡**，`git checkout` 還原不了它。要重複使用的展示需求，請另存到被追蹤的位置或 repo 外面，再於下一輪放回 `temp/user_reps/`。
->
-> `temp/` 也可能放著你不進版控的個人筆記或資料，所以上面只刪指定的子目錄，**不要 `rm -rf temp`**。
-
-清掉這一輪在 GitHub 上留下的東西：
-
-```bash
 gh issue list --state open --json number --jq '.[].number'     # 先看有哪些 Issue
 gh issue list --state open --json number --jq '.[].number' | xargs -I{} gh issue close {}
+
 git branch -r --list 'origin/feature/*' 'origin/demo/*'        # 先看有哪些遠端分支
-git push origin --delete demo/run-1                            # 逐一刪除不再需要的分支
-git branch -D demo/run-1                                       # 本機的同名分支
+git push origin --delete demo/run-1                            # 逐一刪除不再需要的遠端分支
+
+git branch --list 'feature/*' 'demo/*'                         # 本機的展示分支
+git branch -D demo/run-1                                       # 逐一刪除
 ```
 
-刪除遠端分支前，先確認清單裡沒有你要保留的展示紀錄。
+刪除分支前，先確認清單裡沒有你要保留的展示紀錄。
 
 **GitHub 端無法真正重置**
 
