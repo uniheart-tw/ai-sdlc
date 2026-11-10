@@ -49,6 +49,7 @@
 | 目前要實作的任務 | 對應的 GitHub Issue |
 | API 端點規格（唯一事實來源） | `docs/api/endpoint/*.md` |
 | API 撰寫格式與回應慣例 | `docs/api/API_REFERENCE_TEMPLATE.md`、`docs/api/RESPONSE_CONVENTIONS.md` |
+| API 端點文件的完整範例（**不是本專案的端點**，勿實作、勿搬進 `endpoint/`） | `docs/api/examples/*.md` |
 | API-First 開發流程 | `docs/api/API_FIRST_WORKFLOW.md` |
 | 有哪些外部服務、測試時要 stub 什麼 | `backend/flask-he-config.yaml` 的 `external_stubs` |
 | 測試工具怎麼用 | `ai-dev-tools/harness-engineering/flask-he/README.md`、`ai-dev-tools/scripts/flask/README.md` |

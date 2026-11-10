@@ -19,4 +19,4 @@ securitySchemes:
   BearerAuth:
     type: http
     scheme: bearer
-    description: "登入（POST /api/auth/login）取得 token，以 `Authorization: Bearer <token>` 帶入。"
+    description: "以 `Authorization: Bearer <token>` 帶入 token。"

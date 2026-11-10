@@ -10,6 +10,7 @@
 | [`README.md`](./README.md) | 手寫 | 本檔。全域資訊：目錄導覽、分檔規則、共通約定、撰寫規範。（本檔不再是合併來源；合併只收 `endpoint/*.md`。） |
 | [`endpoint/`](./endpoint/) | 手寫 | 各路徑群組的端點文件（一群組一檔），為合併與 OpenAPI 的**唯一手寫來源**。見下方「分檔規則」。 |
 | [`endpoint/metadata.yaml`](./endpoint/metadata.yaml) | 手寫 | 整個 repo 共用的 API 名稱、版本、伺服器位址、認證方式（`securitySchemes`），由 `build-reference.py` 讀入並寫成 `API_REFERENCE.md` 的檔首 front matter；不是端點文件，端點內容不會被合併。 |
+| [`examples/`](./examples/) | 手寫 | 完整的端點文件**範例**（`auth.md`、`reports.md`），只供參考撰寫方式；**不是本專案的端點**，工具鏈與測試生成都不會讀取。 |
 | [`API_REFERENCE_TEMPLATE.md`](./API_REFERENCE_TEMPLATE.md) | 手寫 | 單一端點撰寫範本（GET/POST/PUT/DELETE 與檔案 / 串流特例），示範區塊、順序與 Request/Response Model 格式。 |
 | [`RESPONSE_CONVENTIONS.md`](./RESPONSE_CONVENTIONS.md) | 手寫 | 回應型態規範基準：成功回裸資源、錯誤 `{"error":...}` ＋狀態碼、刪除 `{"status":"deleted"}` 等慣例與狀態碼對照。 |
 | [`API_FIRST_WORKFLOW.md`](./API_FIRST_WORKFLOW.md) | 手寫 | API-First 開發流程說明：工具鏈、三階段步驟、契約測試方式。 |
@@ -21,16 +22,10 @@
 
 ## 分檔規則
 
-端點文件依**路徑群組**分檔，一個路徑群組一份文件，置於 [`endpoint/`](./endpoint/) 目錄，檔名對應 `/api/{group}` 的 `{group}`（例如 `/api/videos/*` → `endpoint/videos.md`）。
+端點文件依**路徑群組**分檔，一個路徑群組一份文件，置於 [`endpoint/`](./endpoint/) 目錄，檔名對應 `/api/{group}` 的 `{group}`（例如 `/api/meeting-minute` → `endpoint/meeting.md`）。
 
-| 檔案 | 路徑群組 | 端點數 |
-|------|----------|:----:|
-| [`endpoint/auth.md`](./endpoint/auth.md) | `/api/auth/*` | 1 |
-| [`endpoint/videos.md`](./endpoint/videos.md) | `/api/videos/*` | 12 |
-| [`endpoint/assessments.md`](./endpoint/assessments.md) | `/api/assessments/*` | 15 |
-| [`endpoint/courses.md`](./endpoint/courses.md) | `/api/courses/*` | 5 |
-| [`endpoint/reports.md`](./endpoint/reports.md) | `/api/reports/*` | 2 |
-| [`endpoint/taxonomies.md`](./endpoint/taxonomies.md) | `/api/taxonomies/*` | 4 |
+- **`endpoint/` 只放本專案真正要實作的端點**。基準狀態下只有 `metadata.yaml`，端點文件由 AI 依 Issue 建立。
+- **範例放在 [`examples/`](./examples/)**：`auth.md`（登入、公開端點）、`reports.md`（需認證、含非 JSON 的檔案下載）。它們示範完整的寫法，但**不是本專案的端點**，不會被合併進 `API_REFERENCE.md` 與 `openapi.yaml`，也就不會被 flask-he 當成測試對象。
 
 > `GET /api/health` 定義於 `backend/app.py`（非 Blueprint），不屬於任何 Blueprint 路徑群組。
 

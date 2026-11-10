@@ -185,7 +185,7 @@ alias hook='bash ai-dev-tools/scripts/hooks/kiro-hook-run.sh'
 ```bash
 hook --list                                              # 應列出 git-issues、git-issue-resolve、commit-message、pr-message 等 Hook
 hook commit-message --dry-run | head -20                 # 只組 prompt 並印出，不呼叫 AI、不動 git
-python ai-dev-tools/scripts/apispec/lint-endpoints.py    # 應顯示「全部符合範本規範」
+python ai-dev-tools/scripts/apispec/lint-endpoints.py --endpoint-dir docs/api/examples --metadata docs/api/endpoint/metadata.yaml   # 用範例驗證工具，應顯示「全部符合範本規範」
 ls -l .kiro/steering/                                    # 應看到 api-first-workflow.md 指向 docs/api/API_FIRST_WORKFLOW.md
 ```
 
@@ -362,7 +362,7 @@ python $T/md-to-openapi.py       # 產生 → docs/api/openapi.yaml
 python $T/validate-openapi.py    # 驗證規範
 ```
 
-API-First 工具鏈的完整說明見 [API-First 開發流程](./docs/api/API_FIRST_WORKFLOW.md)。
+工具鏈處理的是 `docs/api/endpoint/` 底下的端點文件。基準狀態下那裡只有 `metadata.yaml`，前兩支工具會回報「端點目錄無任何 .md」，要等 AI 依 Issue 建立端點文件後才執行。完整說明見 [API-First 開發流程](./docs/api/API_FIRST_WORKFLOW.md)。
 
 ## 專案結構
 
@@ -371,7 +371,8 @@ ai-sdlc/
 ├── docs/
 │   ├── courses/            課程詳細內容（講稿、預備知識等）
 │   └── api/                API-First 文件
-│       └── endpoint/       手寫端點文件與 metadata.yaml（API 名稱、版本、伺服器、認證方式）
+│       ├── endpoint/       本專案的端點文件（由 AI 依 Issue 建立）與 metadata.yaml（API 名稱、版本、伺服器、認證方式）
+│       └── examples/       端點文件的完整範例，只供參考，不會被工具鏈與測試生成讀取
 ├── backend/                示範用 Flask 專案
 ├── frontend/               前端（React 18 + Vite 5 + Axios），由 AI 依 Issue 實作時建立
 ├── temp/user_reps/         原始需求（git-issues 的輸入），需自行建立；整個 temp/ 不進版控

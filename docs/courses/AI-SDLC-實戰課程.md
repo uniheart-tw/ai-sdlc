@@ -1201,7 +1201,8 @@ bash ai-dev-tools/harness-engineering/flask-he/run.sh --list --kind integration
 ```
 
 - 資源是 URL 在 `/api` 之後的第一段（`/api/meeting-minute` → `meeting-minute`），涵蓋該資源所有端點。
-- 最後的 ⚠ 是**契約與實作不一致**的提醒：`openapi.yaml` 有、Flask 沒有的端點。本次 `notify` 是 Issue #4 還沒做，屬於預期；`auth`、`reports` 是範例端點文件的殘留。這正是 API-First 工具鏈要讓人看到的落差。
+- 最後的 ⚠ 是**契約與實作不一致**的提醒：`openapi.yaml` 有、Flask 沒有的端點。本次 `notify` 是 Issue #4 還沒做，屬於預期。這正是 API-First 工具鏈要讓人看到的落差。
+- 上面的 `auth`（以及沒列出的 `reports`）是當時放在 `docs/api/endpoint/` 的**範例文件**，被合併進 `openapi.yaml` 後，flask-he 就把它們當成要測試的資源。範例現在已移到 `docs/api/examples/`，工具鏈與 flask-he 都不會讀取，下一輪不會再出現。這也是一個教訓：**`endpoint/` 只放本專案真正要實作的端點**。
 
 生成與驗證：
 

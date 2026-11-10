@@ -3,6 +3,7 @@
 本檔是**單一 API 端點**的撰寫範本，示範如何為一個 Flask 端點寫出一致、可自動轉換為 OpenAPI 的 Markdown 參考文件。
 在 `docs/api/endpoint/<resource>.md` 新增端點時，複製下方對應區塊（GET / POST / PUT / DELETE），替換路徑、欄位與範例即可。
 範例以通用的 `items` 資源示意，請依實際資源改寫，勿照抄範例的假資料。
+完整的檔案範例見 [`examples/`](./examples/)（`auth.md`：公開端點；`reports.md`：需認證、含非 JSON 的檔案下載）。範例**不要**放進 `endpoint/`，否則會被當成本專案的端點，合併進 `openapi.yaml` 並成為測試對象。
 
 ## 檔案分工
 
