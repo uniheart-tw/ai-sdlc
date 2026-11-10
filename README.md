@@ -216,7 +216,9 @@ git push origin demo-baseline               # 分支已被 Hook 推送，只需�
 **(2) 每次展示：開一條獨立的基底分支**
 
 ```bash
+# 從遠端(origin)把所有 tag 抓到你本機
 git fetch --tags
+# 要用 demo-baseline 這個 tag 當起點
 git checkout -b demo/run-1 demo-baseline
 git push -u origin demo/run-1
 ```
