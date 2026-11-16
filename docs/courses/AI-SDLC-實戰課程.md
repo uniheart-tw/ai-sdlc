@@ -73,8 +73,9 @@ flowchart LR
 這份期望和本課程的關係是：
 
 - **寫程式這件事，已經進入第 3 級。** 今天的 AI 開發工具不只是聊天，而是能讀檔案、改程式、跑測試、提交 commit 的代理人。本課程實戰中的 AI，就是依 Issue 自己迭代實作的代理人。
-- **但離第 5 級還很遠。** 第 5 級的前提是「不需要人介入也能做出正確的決策」。實戰中會看到，AI 說「完成了」，真實執行時仍可能因為模型下架、權限、環境而失敗；需求的取捨、PR 能不能合併，也還是要人決定。
-- **所以問題變成管理問題。** 當代理人能力越來越強，卻還不能完全放手時，關鍵就不在 AI 夠不夠聰明，而在**怎麼讓 AI 照規範做事，以及人要在哪些點上把關**。這正是 AI-SDLC 要回答的問題。
+- **第 5 級「完全交給 AI」並不切實際。** 依 OpenAI 的描述，第 5 級是 AI 在沒有人介入的情況下完成整個組織的工作。但沒有一個組織會把管理完全授權給一個能力足夠、卻沒有任何監督的對象：對人是這樣，對 AI 也是這樣。能力再強，也要有審查、權限與問責。實戰中也會看到，AI 說「完成了」，真實執行時仍可能因為模型下架、權限、環境而失敗；需求的取捨、PR 能不能合併，也還是要人決定。
+- **AI-SDLC 用另一種方式實踐「組織」這一級。** 我們的看法是：組織等級的 AI，真正的樣貌是**把 AI 融入組織的活動**，而不是讓 AI 取代組織。AI-SDLC 把 AI 放進需求、實作、測試、交付的每個步驟，讓 AI 和人依同一套流程分工：AI 負責產出，人負責定義、審查與判斷。這是本課程對第 5 級的詮釋，不是 OpenAI 的原意。
+- **所以問題變成管理問題。** 當代理人能力越來越強，關鍵就不在 AI 夠不夠聰明，而在**怎麼讓 AI 照規範做事，以及人要在哪些點上把關**。這正是 AI-SDLC 要回答的問題，也是第 7 節討論組織重新定位的起點。
 
 > 參考：Bloomberg〈[OpenAI Sets Levels to Track Progress Toward Superintelligent AI](https://www.bloomberg.com/news/articles/2024-07-11/openai-sets-levels-to-track-progress-toward-superintelligent-ai)〉（2024-07-11）；Fortune〈[OpenAI's new scale to track AI progress doesn't mention AGI](https://fortune.com/2024/07/12/openai-rank-ai-progress-agi/)〉（2024-07-12）。內容經改寫整理。
 
