@@ -17,6 +17,7 @@
 4. **一個心智模型**：Runner 是穩定的「prompt 編譯器」，Hook 是可替換的任務。runner 為五個元件（agent / model / steering / prompt / context）都留了位置，目前實際用到的是 model、steering、prompt、context。
 5. **Runner 的關鍵設計取捨**：任務怎麼註冊、設定的優先序、context script 的介面、組裝順序、dry-run、怎麼掛進別的專案、AI 的權限邊界畫在哪。
 6. **一輪完整的實戰**：用 git 分支管理展示流程、讓 LLM 依 Issue 編碼、用 harness engineering 生成單元與整合測試，並用 OpenTelemetry 觀察每個請求的呼叫鏈；以及真實執行時，哪些問題只有人才抓得到。
+7. **導入的管理視角**：把 AI-SDLC 看成開發流程的流水線正規化，對照手工紡織走向機械紡織的衝擊，並從投資報酬率（ROI）、員工重新定位、組織重新定位評估導入。
 
 ## 議程
 
@@ -25,7 +26,8 @@
 3. **拆解**：每個 SDLC 階段的 hook 需要哪些材料
 4. **Runner 的設計**：一支通用 hook runner 的關鍵設計決策
 5. **實戰流程**：需求 → Issue → 實作 → PR → 合併；backend Issue 的 API Test First、測試生成與觀察性
-6. **收尾**：人機邊界、設計原則、Q&A
+6. **收尾**：人機邊界、設計原則
+7. **延伸討論**：導入 AI 是組織管理的問題：流水線正規化、ROI、員工與組織的重新定位；Q&A
 
 ```mermaid
 flowchart LR
@@ -1418,6 +1420,187 @@ AI（hook）：分析 diff → 產生 message → 寫入 temp/commit-msg.txt
 5. **指令在前、資料在後**，資料要標示清楚。
 6. **一定要有 dry-run**：看得到才除錯得了、審得了。
 7. **AI 準備，人確認**：不可逆的動作留給人。
+
+---
+
+## 7. 延伸討論：導入 AI 是組織管理的問題，不只是技術問題
+
+前面六節都在回答「怎麼做」。這一節回到開場的那句話：**我們不是為了技術而導入 AI，是為了管理。** 工具能跑起來只是開始，真正決定導入成敗的，是投資值不值得、人要怎麼重新定位、組織要怎麼跟著改變。
+
+### 7.1 AI-SDLC 的本質：把開發流程變成一條正規化的流水線
+
+回頭看第 5 節的實戰，AI-SDLC 做的事情其實很像工廠的流水線：
+
+| 流水線的特徵 | 在 AI-SDLC 中的對應 |
+|-------------|-------------------|
+| 工序被切成固定的站 | 需求 → 規格書 → Issue → 實作 → 測試 → PR → 合併 |
+| 每一站有標準作業 | 每個 hook 的 prompt、範本（PRD、EARS、PR 範本）、steering |
+| 半成品有規格 | 規格書的 10 個章節、Issue 的 front matter、API 契約 |
+| 機器負責重複的加工 | AI 依 Issue 迭代實作、生成測試、產生 commit 與 PR 描述 |
+| 品管站把關 | 測試全綠才算完成、lint 與 validate、人工審 Issue 與 PR |
+| 產品長得一樣 | 不管誰參與，產出都符合同一套規範 |
+
+近年的研究也指向同一件事：AI 的價值來自流程，而不是工具本身。
+
+- Google 的 DORA 團隊在 2025 年調查了近 5,000 名技術人員，結論是 AI 在軟體開發中扮演**放大器**的角色：它會放大體質好的組織的優勢，也會放大體質不好的組織的問題 [6]。換句話說，沒有正規化的流程，AI 只會讓混亂來得更快。
+- McKinsey 的全球調查測試了 25 個組織屬性，發現「重新設計工作流程」是與生成式 AI 帶來獲利影響（EBIT）關聯最大的因素；但當時只有約 21% 使用生成式 AI 的組織表示，已經根本性地重新設計過部分流程 [3]。
+
+這種「把流程正規化」的變化，歷史上發生過很多次。最常被拿來對照的，是工業革命時紡織業從手工轉向機械。
+
+### 7.2 歷史對照：從手工紡織到機械紡織
+
+十八世紀後期起，英國紡織業陸續出現紡紗機與動力織布機，生產逐漸從家庭作坊集中到工廠。這次轉變帶來的衝擊，不只是「機器比人快」：
+
+| 面向 | 手工紡織時代 | 機械紡織時代 |
+|------|------------|------------|
+| 生產方式 | 熟練工匠在家中完成整個流程 | 工序切分，在工廠的機器上分段完成 |
+| 品質靠什麼 | 個人手藝，每個工匠做出來的不一樣 | 機器與標準工序，產品規格一致 |
+| 價值所在 | 一雙熟練的手 | 設計工序、操作與維護機器、管理工廠 |
+| 對工匠的衝擊 | — | 手工織工的收入與地位大幅下滑，部分人轉為機器操作員 |
+| 社會反應 | — | 1810 年代英格蘭出現「盧德運動」（Luddite），部分工人以破壞機器表達抗議 |
+| 新出現的角色 | — | 機械工程師、工廠管理者、機器維修技師 |
+
+把它和軟體開發對照：
+
+| 紡織業 | 軟體開發 |
+|--------|---------|
+| 手工織工 | 每個人用自己的方式跟 AI 交談、開發（1.2） |
+| 機械織布機 | AI 代理人：能自己讀檔案、寫程式、跑測試 |
+| 工廠的標準工序 | AI-SDLC：把規範內建在每個 hook 裡 |
+| 機械工程師、工廠管理者 | 設計流程與 hook、維護工具集、定義把關點的人 |
+
+另一個常被經濟學家引用的例子是**電力**。經濟史學者 Paul David 在 1990 年比較電動機與電腦的導入過程：工廠剛開始用電時，經理人多半只是把電動機裝進原本為蒸汽動力設計的廠房，沿用舊的配置與工序，生產力並沒有明顯提升；要等到工廠依照電力的特性重新設計廠房配置與生產流程，效益才真正出現，而這段落差長達數十年 [1]。這篇文章原本是為了回答「為什麼電腦到處都是，生產力統計卻看不到它」，放到今天的 AI 也同樣適用。
+
+歷史給我們兩個提醒：
+
+- **機器本身不會帶來好處，工序的重新設計才會。** 早期工廠真正的競爭力，來自把工作重新切分、標準化與管理，而不是單獨買一台機器；電力的例子也是如此 [1]。同樣地，只讓每個人各自用 AI 寫程式（1.2 的情況），效果有限；把流程正規化，才會讓 AI 的效益穩定出現。
+- **衝擊落在人身上，而且不平均。** 有些技能變得不值錢，有些新角色出現。導入時如果只談技術、不談人的定位，抗拒與流失就會發生。
+
+### 7.3 用投資報酬率（ROI）評估導入
+
+投資報酬率（Return on Investment，ROI）的概念很簡單：導入帶來的效益，扣掉投入的成本，再除以成本。難的是把成本與效益**都列完整**，而且**在導入前先量好基準**。
+
+先看整體的情況：多數組織還沒有從 AI 得到明顯的回報。
+
+- McKinsey 2025 年 11 月的調查中，只有 39% 的受訪者表示 AI 對整個企業的獲利（EBIT）有影響 [4]。
+- MIT 的 NANDA 計畫在 2025 年發表的報告估計，企業在生成式 AI 投入了約 300 至 400 億美元，但約 95% 的組織沒有得到可衡量的回報 [5]。這個數字被廣泛引用，但它的樣本與研究方法也有不少討論，適合當作「普遍現象」的參考，不宜當作精確統計。
+
+為什麼會這樣？Brynjolfsson、Rock 與 Syverson 提出「生產力 J 曲線」來解釋：AI 這類通用技術需要大量**互補性投資**，包括流程重新設計、新的產品與商業模式、人力資本；這些投資多半是無形的，很難被衡量，所以導入初期的生產力看起來反而會下降，等互補投資開始發揮作用後才上升 [2]。這代表兩件事：導入初期的 ROI 看起來不好是常態，不能太早下結論；而真正要投資的，正是流程、範本、訓練這些「看不見」的部分。
+
+**成本不只是授權費：**
+
+| 成本項目 | 說明 |
+|---------|------|
+| 工具與模型 | AI 工具授權、模型呼叫的 token 費用（第 5 節步驟 9 的真實呼叫，一次就要數十秒與相應費用） |
+| 流程與工具建置 | 設計 hook、範本、steering，維護工具集（本課程的 `ai-dev-tools` 就是持續投入的成果） |
+| 教育訓練 | 讓成員學會照流程走、看懂 dry-run、知道哪裡要把關 |
+| 審查時間 | AI 產出越多，需要人審查的量也越多；已有研究指出 AI 不一定減少工作，反而可能讓工作更密集 [11] |
+| 失敗成本 | AI 誤判或環境問題造成的除錯時間（第 5 節步驟 9.3 的四個問題）、錯誤合併後的還原成本 |
+
+**效益不只是「寫得比較快」：**
+
+| 效益項目 | 可以觀察的指標 |
+|---------|--------------|
+| 一致性 | Issue、commit、PR 是否符合格式；不同成員產出的差異 |
+| 教育與監督成本下降 | 新成員上手所需時間；資深工程師花在指導與 review 的時間 |
+| 交付週期 | 從 Issue 建立到 PR 合併的時間 |
+| 品質 | 測試覆蓋率、上線後的缺陷數、需要返工的 PR 比例；DORA 2025 發現 AI 的導入與交付量呈正相關，但與交付穩定性仍呈負相關 [6]，所以品質指標一定要量 |
+| 文件完整度 | README、API 文件是否跟著程式更新 |
+
+評估時要注意：
+
+- **先量基準再導入**。沒有導入前的數字，就無法說明導入後改善了多少。
+- **算總成本，不只算工具成本**。審查時間與失敗成本最容易被忽略。
+- **效益常常不在開發速度，而在管理成本**。本課程的出發點就是減少「一個一個教育、一個一個監督」的成本（1.3），這部分的效益要從人的時間去量。
+- **小範圍試行**。先用一個專案、一條流程試，量到數字再決定是否擴大。
+- **軟體開發的 ROI 可以參考 DORA 的框架**。DORA 另外出版了專門討論 AI 輔助軟體開發 ROI 的報告 [7]，搭配 DORA 長期使用的交付指標，可以作為設計基準指標的起點。
+
+### 7.4 員工的重新定位
+
+導入 AI-SDLC 後，工作沒有消失，而是**從「做」移向「定義、審查與判斷」**。本課程已經示範了這個分工（2.1）：
+
+| 角色 | 導入前主要在做什麼 | 導入後主要在做什麼 |
+|------|-----------------|-----------------|
+| 全體成員 | 各自理解需求、各自實作 | 一起審查規格書與 Issue，在一開始就形成共識 |
+| 資淺工程師 | 依指示寫程式、補測試 | 親自執行整合測試，從 request / response 掌握功能的全貌 |
+| 資深工程師 | 逐行 review、指導新人 | 設計流程與規範、最後驗收 PR、處理 AI 處理不了的問題 |
+| 新角色：流程與工具維護者 | — | 維護 hook、範本、steering 與工具集，讓流水線持續可用 |
+
+需要特別注意的風險：
+
+- **資淺工程師的成長路徑**。如果實作都交給 AI，資淺工程師要怎麼累積經驗？本課程的答案是讓他們負責最後的整合測試、審查 AI 的產出，從「驗證」中學習；但組織要刻意設計這條路，不會自然發生。
+- **過度信任**。第 5 節步驟 9.3 已經看到，測試全綠不代表真的能用。審查的能力與責任，不能因為 AI 很能幹就被削弱。
+- **技能貶值帶來的抗拒**。和紡織工匠一樣，原本靠「寫得快」建立價值的人，會感受到威脅。要讓他們看見新的價值在哪裡，並提供轉型的時間與訓練。
+
+哈佛商學院 AI Institute 的整理指出，員工面對 AI 時有三個交織在一起的顧慮：不確定 AI 實際上會做什麼、害怕被取代、害怕自己看起來能力不足；對員工來說，風險是個人的、立即的，好處卻是抽象的、不確定的，所以導入常常卡住 [12]。這三個顧慮都要正面回應：
+
+| 員工的顧慮 | 在 AI-SDLC 中可以怎麼回應 |
+|-----------|------------------------|
+| 不確定 AI 會做什麼 | 用 `--dry-run` 公開 AI 實際收到的 prompt；用 scratchpad 公開每一輪做了什麼 |
+| 害怕被取代 | 明確定義每個角色在流程中的把關點（2.1、6.2），讓人看見自己的位置 |
+| 害怕看起來能力不足 | 把「審查 AI 的產出」「判斷真實執行的結果」當成正式的工作與評量項目，而不是額外負擔 |
+
+### 7.5 組織的重新定位
+
+當流程被正規化，組織本身也要調整：
+
+| 面向 | 需要重新思考的問題 |
+|------|-----------------|
+| 流程的擁有者 | 誰有權修改 hook 與範本？修改流程本身要不要經過審查？ |
+| 權限與治理 | AI 能直接 commit、push 到哪些分支？哪些動作一定要人按下（6.1）？ |
+| 責任歸屬 | AI 產出的程式出問題，誰負責？審查者、流程設計者，還是提出需求的人？ |
+| 評量方式 | 不能只看程式碼產量，要看需求品質、審查品質、流程改善的貢獻 |
+| 知識的保存 | 規範寫在 steering 與範本裡，就成為組織的資產；人員流動時，知識不會跟著離開 |
+| 擴展方式 | 新增一種工作，就是新增一個 hook（第 4 節），而不是重新教育每一個人 |
+| 中階主管的角色 | 導入的負擔常常落在中階主管身上：要推動、要回應團隊的顧慮、還要交出成果，需要明確的授權與支援 [10] |
+
+管理研究對這一點的觀察相當一致：
+
+- 多數企業抓不到 AI 的價值，原因不是技術失敗，而是人、流程與組織政治 [8]。
+- 主要阻礙很少是模型品質或資料，而是技術能力要和組織設計接軌的「最後一哩」；AI 甚至會像一個診斷工具，把組織原本就存在的流程問題暴露出來 [9]。本課程實戰中看到的「每個人寫需求的方式不一樣」「PR 開到錯的分支」，就是這類問題。
+- 把 AI 導入當成由 IT 負責的軟體上線，或當成減少人力的捷徑，會讓中階主管承受過重的負擔，反而拖慢導入 [10]。
+
+> **AI-SDLC 改變的是生產方式，不只是工具。** 就像機械紡織改變了紡織業的分工、技能與組織，AI 進入軟體開發，也會改變團隊需要什麼樣的人、人在哪裡創造價值。導入前就把這些問題攤開來談，比導入後再處理抗拒與混亂，成本低得多。
+
+### 7.6 討論題
+
+課堂或團隊內部可以用以下問題展開討論：
+
+1. 你的團隊目前在等級 1 到 5 的哪個位置（1.1）？期望走到哪裡？中間缺的是技術，還是流程與管理？
+2. 如果要向主管提案導入 AI-SDLC，你會量哪三個基準指標？怎麼證明導入後真的改善了？
+3. 在你的團隊中，哪一種工作最可能被 AI 取代？做這份工作的人，下一步可以往哪裡發展？
+4. 資淺工程師如果不再親手寫大部分的程式，要靠什麼累積能力？組織可以設計哪些機制？
+5. AI 產出的程式造成線上事故，責任應該怎麼分配？流程上要在哪裡加上防線？
+6. 盧德運動的工人反對的究竟是機器，還是機器帶來的分配與工作條件改變？這對今天導入 AI 有什麼啟示？
+7. 電力花了數十年才讓生產力明顯提升 [1]。AI 的 J 曲線 [2] 會比較短嗎？你的組織要做哪些互補投資，才能縮短這段時間？
+
+### 7.7 參考文獻
+
+**經濟史與經濟學**
+
+1. Paul A. David. "The Dynamo and the Computer: An Historical Perspective on the Modern Productivity Paradox." *American Economic Review*, 80(2), 1990. [PDF](http://dklevine.com/archive/refs4115.pdf)
+2. Erik Brynjolfsson, Daniel Rock, Chad Syverson. "The Productivity J-Curve: How Intangibles Complement General Purpose Technologies." NBER Working Paper No. 25148, 2018. [PDF](https://www.nber.org/system/files/working_papers/w25148/w25148.pdf)；MIT IDE 研究摘要：[PDF](https://ide.mit.edu/wp-content/uploads/2019/04/2019-04JCurvebrief.final2_.pdf)
+
+**產業調查**
+
+3. McKinsey & Company. "The state of AI: How organizations are rewiring to capture value." 2025-03-12. [連結](https://www.mckinsey.com/mx/our-insights/the-state-of-ai-how-organizations-are-rewiring-to-capture-value)
+4. McKinsey & Company. "The state of AI in 2025." 2025-11. [PDF](https://www.mckinsey.com/~/media/mckinsey/business%20functions/quantumblack/our%20insights/the%20state%20of%20ai/november%202025/the-state-of-ai-in-2025.pdf)
+5. MIT NANDA. "The GenAI Divide: State of AI in Business 2025." 2025-07.（報告由第三方轉載：[PDF](https://www.teamim.com/hubfs/AI/v0.1_State_of_AI_in_Business_2025_Report.pdf)；研究方法有不少討論，引用時請注意）
+
+**軟體開發**
+
+6. Google DORA. "2025 State of AI-assisted Software Development." 2025. [PDF](https://services.google.com/fh/files/misc/2025_state_of_ai_assisted_software_development.pdf)；發布文章：[Announcing the 2025 DORA Report](https://cloud.google.com/blog/products/ai-machine-learning/announcing-the-2025-dora-report)
+7. Google DORA. "ROI of AI-assisted Software Development." 2026. [PDF](https://services.google.com/fh/files/misc/dora-roi-of-ai-assisted-software-development-2026.pdf)
+
+**管理實務**
+
+8. Harvard Business Review. "Overcoming the Organizational Barriers to AI Adoption." 2025-11. [連結](https://hbr.org/2025/11/overcoming-the-organizational-barriers-to-ai-adoption)
+9. Karim R. Lakhani, Jen Stave, Jared Spataro. "The 'Last Mile' Problem Slowing AI Transformation." *Harvard Business Review*, 2026-03. [連結](https://hbr.org/2026/03/the-last-mile-problem-slowing-ai-transformation)；HBS AI Institute 的解讀：[Why Your AI Strategy May Be Failing](https://aiinstitute.hbs.edu/why-your-ai-strategy-may-be-failing/)
+10. Harvard Business Review. "AI Adoption Is Overloading Your Middle Managers." 2026-06. [連結](https://hbr.org/2026/06/ai-adoption-is-overloading-your-middle-managers)
+11. Harvard Business Review. "AI Doesn't Reduce Work—It Intensifies It." 2026-02. [連結](https://hbr.org/2026/02/ai-doesnt-reduce-work-it-intensifies-it)
+12. Harvard Business School AI Institute. "The People, Processes, and Politics of AI ROI." 2026. [連結](https://aiinstitute.hbs.edu/the-people-processes-and-politics-of-ai-roi/)
+
+> 以上內容均經改寫整理，未直接引用原文。Harvard Business Review 的文章多數需要訂閱，本章僅依其公開摘要撰寫；數據以原始報告為準。
 
 ---
 
