@@ -29,27 +29,29 @@
 6. **收尾**：人機邊界、設計原則
 7. **延伸討論**：導入 AI 是組織管理的問題：流水線正規化、ROI、員工與組織的重新定位；Q&A
 
-### 課程主線：六個步驟
+### 課程主線：七個步驟
 
-整份課程依一條主線展開：先理解 AI 的能力與開發的難點，再介紹關鍵技術，接著把 SDLC 拆成階段、說清楚每個階段要交給 AI 什麼，然後用**一支 script（runner）把所有階段貫通**，最後實際跑一輪，收在可以帶走的原則上。
+整份課程依一條主線展開：先認識 AI 的能力與開發的難點，再採用關鍵技術，接著把 SDLC 拆成階段、說清楚每個階段要交給 AI 什麼，然後**以簡馭繁，用一支 script（runner）把所有階段貫通**，實際跑一輪之後總結經驗，最後延伸到組織層面的導入。
 
 ```mermaid
 flowchart LR
-    K["1. Know AI & SDLC<br/>AI 能做什麼<br/>開發卡在哪裡"] --> T["2. The Key Techniques<br/>進行、需求、品質<br/>一致性、測試生成"]
-    T --> B["3. Break Out the SDLC<br/>每個階段要交給 AI<br/>哪些材料"]
-    B --> U["4. Unify the Command<br/>一支 runner script<br/>貫通所有階段"]
-    U --> I["5. Implementation<br/>一輪完整的實戰"]
-    I --> W["6. Takeaway<br/>人機邊界、設計原則<br/>導入的管理視角"]
+    K["1. Know AI & the SDLC<br/>認識 AI 與 SDLC"] --> T["2. Adopt the Key Techniques<br/>採用關鍵技術"]
+    T --> B["3. Break Down the SDLC<br/>拆解 SDLC"]
+    B --> U["4. Simplify the Complex<br/>以簡馭繁"]
+    U --> I["5. Implement a Full Cycle<br/>實作一輪完整流程"]
+    I --> W["6. Wrap Up the Lessons<br/>總結"]
+    W --> E["7. Extend It to the Organization<br/>延伸到組織"]
 ```
 
 | 步驟 | 要回答的問題 | 對應章節 |
 |------|------------|---------|
-| 1. **Know AI & SDLC** | AI 現在能做到什麼？用 AI 開發，難點在哪裡？ | 第 1 節 開場 |
-| 2. **The Key Techniques** | 專案怎麼進行、需求怎麼定義、品質怎麼確保、文件程式測試怎麼一致、測試怎麼生成？ | 第 2 節 預備觀念 |
-| 3. **Break Out the SDLC** | 需求、實作、測試、交付各要交給 AI 哪些材料？人在哪裡把關？ | 第 3 節 拆解 |
-| 4. **Unify the Command** | 怎麼用同一支 runner 指令，把每個階段的任務組裝起來？ | 第 4 節 Runner 的設計 |
-| 5. **Implementation** | 從需求到 PR 合併，一輪完整的實戰長什麼樣？ | 第 5 節 實戰流程 |
-| 6. **Takeaway** | AI 與人的邊界畫在哪？導入時組織要怎麼調整？ | 第 6 節 收尾、第 7 節 延伸討論 |
+| 1. **Know AI & the SDLC**（認識 AI 與 SDLC） | AI 現在能做到什麼？用 AI 開發，難點在哪裡？ | 第 1 節 開場 |
+| 2. **Adopt the Key Techniques**（採用關鍵技術） | 專案怎麼進行、需求怎麼定義、品質怎麼確保、文件程式測試怎麼一致、測試怎麼生成？ | 第 2 節 預備觀念 |
+| 3. **Break Down the SDLC**（拆解 SDLC） | 需求、實作、測試、交付各要交給 AI 哪些材料？人在哪裡把關？ | 第 3 節 拆解 |
+| 4. **Simplify the Complex**（以簡馭繁） | 怎麼用同一支 runner 指令，把每個階段的任務組裝起來？ | 第 4 節 Runner 的設計 |
+| 5. **Implement a Full Cycle**（實作一輪完整流程） | 從需求到 PR 合併，一輪完整的實戰長什麼樣？ | 第 5 節 實戰流程 |
+| 6. **Wrap Up the Lessons**（總結） | AI 與人的邊界畫在哪？有哪些設計原則？ | 第 6 節 收尾 |
+| 7. **Extend It to the Organization**（延伸到組織） | 導入時，投資、員工與組織要怎麼調整？ | 第 7 節 延伸討論 |
 
 貫穿全文的三個問題，讀每一段時都可以回頭問：
 

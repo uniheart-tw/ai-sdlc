@@ -13,25 +13,27 @@ title: AI-SDLC：AI 驅動的軟體開發生命週期
 
 ---
 
-## 課程主線：六個步驟
+## 課程主線：七個步驟
 
 ```mermaid
 flowchart LR
-    K["1. Know AI & SDLC<br/>AI 能做什麼<br/>開發卡在哪裡"] --> T["2. The Key Techniques<br/>進行、需求、品質<br/>一致性、測試生成"]
-    T --> B["3. Break Out the SDLC<br/>每個階段要交給 AI<br/>哪些材料"]
-    B --> U["4. Unify the Command<br/>一支 runner script<br/>貫通所有階段"]
-    U --> I["5. Implementation<br/>一輪完整的實戰"]
-    I --> W["6. Takeaway<br/>人機邊界、設計原則<br/>導入的管理視角"]
+    K["1. Know AI & the SDLC<br/>認識 AI 與 SDLC"] --> T["2. Adopt the Key Techniques<br/>採用關鍵技術"]
+    T --> B["3. Break Down the SDLC<br/>拆解 SDLC"]
+    B --> U["4. Simplify the Complex<br/>以簡馭繁"]
+    U --> I["5. Implement a Full Cycle<br/>實作一輪完整流程"]
+    I --> W["6. Wrap Up the Lessons<br/>總結"]
+    W --> E["7. Extend It to the Organization<br/>延伸到組織"]
 ```
 
 | 步驟 | 要回答的問題 |
 |------|------------|
-| 1. Know AI & SDLC | AI 能做到什麼？用 AI 開發難在哪？ |
-| 2. The Key Techniques | 怎麼進行、定義需求、確保品質與一致、生成測試？ |
-| 3. Break Out the SDLC | 每個階段要交給 AI 哪些材料？ |
-| 4. Unify the Command | 怎麼用一支 runner 貫通所有階段？ |
-| 5. Implementation | 一輪完整的實戰 |
-| 6. Takeaway | 人機邊界、設計原則、導入的管理視角 |
+| 1. Know AI & the SDLC | AI 能做到什麼？用 AI 開發難在哪？ |
+| 2. Adopt the Key Techniques | 怎麼進行、定義需求、確保品質與一致、生成測試？ |
+| 3. Break Down the SDLC | 每個階段要交給 AI 哪些材料？ |
+| 4. Simplify the Complex | 怎麼用一支 runner 貫通所有階段？ |
+| 5. Implement a Full Cycle | 一輪完整的實戰 |
+| 6. Wrap Up the Lessons | 人機邊界、設計原則 |
+| 7. Extend It to the Organization | 導入的投資、員工與組織 |
 
 貫穿全場的三個問題：**介面是什麼？誰是事實來源？人在哪裡把關？**
 
@@ -39,7 +41,7 @@ flowchart LR
 
 <!-- 第 1 部分 -->
 
-**Step 1 / 6 · Know AI & SDLC**
+**Step 1 / 7 · Know AI & the SDLC**
 
 # 1. 開場
 ## 為什麼要 AI-SDLC
@@ -104,7 +106,7 @@ flowchart LR
 
 <!-- 第 2 部分 -->
 
-**Step 2 / 6 · The Key Techniques**
+**Step 2 / 7 · Adopt the Key Techniques**
 
 # 2. 預備觀念
 ## 專案開發的五個基本問題
@@ -302,7 +304,7 @@ flowchart LR
 
 <!-- 第 3 部分 -->
 
-**Step 3 / 6 · Break Out the SDLC**
+**Step 3 / 7 · Break Down the SDLC**
 
 # 3. 拆解
 ## 每個階段要交給 AI 哪些材料
@@ -407,10 +409,10 @@ flowchart LR
 
 <!-- 第 4 部分 -->
 
-**Step 4 / 6 · Unify the Command**
+**Step 4 / 7 · Simplify the Complex**
 
 # 4. Runner 的設計
-## 一支 script 貫通所有階段
+## 以簡馭繁：一支 script 貫通所有階段
 
 ---
 
@@ -481,7 +483,7 @@ my-flask-project/          ← REPO_ROOT（規範、現況、AI 的工作目錄�
 
 <!-- 第 5 部分 -->
 
-**Step 5 / 6 · Implementation**
+**Step 5 / 7 · Implement a Full Cycle**
 
 # 5. 實戰
 ## 會議記錄彙整系統
@@ -617,7 +619,7 @@ python ai-dev-tools/scripts/flask/validate_tests.py meeting-minute --kind integr
 
 <!-- 第 6 部分 -->
 
-**Step 6 / 6 · Takeaway**
+**Step 6 / 7 · Wrap Up the Lessons**
 
 ## 6. 收尾：AI 能做到哪裡，由權限決定
 
@@ -660,7 +662,7 @@ AI（hook）：分析 diff → 產生 message
 
 <!-- 第 7 部分 -->
 
-**Step 6 / 6 · Takeaway（延伸）**
+**Step 7 / 7 · Extend It to the Organization**
 
 # 7. 延伸討論
 ## 導入 AI 是組織管理的問題
