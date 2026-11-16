@@ -13,27 +13,33 @@ title: AI-SDLC：AI 驅動的軟體開發生命週期
 
 ---
 
-## 議程
+## 課程主線：六個步驟
 
-1. 開場：為什麼要 AI-SDLC
-2. 預備觀念：SDLC × AI-DLC × AI-SDLC、TDD / BDD / SDD、測試金字塔、API Test First、Harness
-3. 拆解：每個階段的 hook 需要哪些材料
-4. Runner 的設計
-5. 實戰：會議記錄彙整系統
-6. 收尾：人機邊界與設計原則
-7. 延伸討論：導入 AI 是組織管理的問題
+```mermaid
+flowchart LR
+    K["1. Know AI & SDLC<br/>AI 能做什麼<br/>開發卡在哪裡"] --> T["2. The Key Techniques<br/>進行、需求、品質<br/>一致性、測試生成"]
+    T --> B["3. Break Out the SDLC<br/>每個階段要交給 AI<br/>哪些材料"]
+    B --> U["4. Unify the Command<br/>一支 runner script<br/>貫通所有階段"]
+    U --> I["5. Implementation<br/>一輪完整的實戰"]
+    I --> W["6. Takeaway<br/>人機邊界、設計原則<br/>導入的管理視角"]
+```
 
----
+| 步驟 | 要回答的問題 |
+|------|------------|
+| 1. Know AI & SDLC | AI 能做到什麼？用 AI 開發難在哪？ |
+| 2. The Key Techniques | 怎麼進行、定義需求、確保品質與一致、生成測試？ |
+| 3. Break Out the SDLC | 每個階段要交給 AI 哪些材料？ |
+| 4. Unify the Command | 怎麼用一支 runner 貫通所有階段？ |
+| 5. Implementation | 一輪完整的實戰 |
+| 6. Takeaway | 人機邊界、設計原則、導入的管理視角 |
 
-## 貫穿全場的三個問題
-
-1. **介面是什麼？** CLI、runner ↔ context script、prompt ↔ context 段落名稱
-2. **誰是事實來源？** prompt 檔、JSON、專案 steering、Flask 路由、API 契約
-3. **人在哪裡把關？** dry-run 審 prompt、審 Issue、審 PR、判斷真實執行結果
+貫穿全場的三個問題：**介面是什麼？誰是事實來源？人在哪裡把關？**
 
 ---
 
 <!-- 第 1 部分 -->
+
+**Step 1 / 6 · Know AI & SDLC**
 
 # 1. 開場
 ## 為什麼要 AI-SDLC
@@ -69,15 +75,11 @@ title: AI-SDLC：AI 驅動的軟體開發生命週期
 | 參與者流動 | 每來一個人就要重新教、持續盯 |
 
 > 問題不在 AI 不夠聰明，而在**每個人用 AI 的方式都不一樣**。
+> 傳統解法是教育與監督：寫規範、辦訓練、code review、專人監督。成本高、事後才發現、規模大就管不動。
 
 ---
 
-## 傳統解法 vs. 我們的解法
-
-**傳統：教育與監督**
-寫規範、辦訓練、code review、指定專人監督：成本高、事後才發現、規模大就管不動
-
-**AI-SDLC：把規範內建在流程裡**
+## 我們的解法：把規範內建在流程裡
 
 | 以前靠人 | 現在靠流程 |
 |---------|-----------|
@@ -102,11 +104,22 @@ title: AI-SDLC：AI 驅動的軟體開發生命週期
 
 <!-- 第 2 部分 -->
 
+**Step 2 / 6 · The Key Techniques**
+
 # 2. 預備觀念
+## 專案開發的五個基本問題
+
+| 問題 | 本課程的答案 |
+|------|------------|
+| 專案要怎麼進行？ | AI-SDLC |
+| 需求要怎麼定義？ | SDD |
+| 怎麼確保品質？ | 測試金字塔 |
+| 怎麼確保文件、程式、測試一致？ | API Test First |
+| 測試內容怎麼生成？ | Harness Engineering |
 
 ---
 
-## 傳統 SDLC：人主導、分工交接
+## 專案怎麼進行：傳統 SDLC 與 AWS AI-DLC
 
 ```mermaid
 flowchart LR
@@ -117,14 +130,9 @@ flowchart LR
     P -.->|下一個 sprint| R
 ```
 
-- AI 只是輔助工具：補全程式、產生文件
-- 流程本身沒有改變，交接、會議、文件仍由人負責
+AI 只是輔助工具，流程本身沒有改變，交接仍由人負責。
 
----
-
-## 對照組：AWS AI-DLC
-
-**以開發速度為目標，重新設計整個生命週期**：3 個階段、9 個步驟
+**對照組 AWS AI-DLC：以開發速度為目標，重新設計生命週期**（3 階段 9 步驟）
 
 ```mermaid
 flowchart LR
@@ -180,7 +188,7 @@ flowchart LR
 
 ---
 
-## TDD / BDD / SDD：先定義對，再寫程式
+## 需求怎麼定義：TDD / BDD / SDD
 
 ```mermaid
 flowchart LR
@@ -192,7 +200,9 @@ flowchart LR
 |---|-----|-----|-----|
 | 參與者 | 開發者 | 開發、PM、QA | PM、架構師、開發者、AI |
 | 規範 | AAA、測試命名 | Gherkin | EARS、PRD、OpenAPI |
-| 弱點 | 只證明程式符合測試 | 情境多時維護成本高 | 規格不會執行 |
+| 主要產物 | 測試程式 | `.feature` 情境檔 | 需求、設計、任務文件 |
+
+> 三種都可以，**團隊選自己習慣的**；這裡只是介紹，不比較優劣。
 
 ---
 
@@ -217,11 +227,13 @@ def test_login_locks_account_after_five_failures():
     assert result.locked_minutes == 15            # Assert
 ```
 
-> 三者不互相取代，而是一路推導。
+**我們的選擇：SDD**
+- 有人認為 TDD 的寫法對 AI 生成測試比較友善
+- 本課程選 SDD，因為 **Kiro 建議的開發方式就是 SDD**（Spec：需求 → 設計 → 任務）
 
 ---
 
-## 測試金字塔：測試要分層
+## 怎麼確保品質：測試金字塔
 
 ![測試金字塔](images/test-pyramid.svg)
 
@@ -235,20 +247,27 @@ def test_login_locks_account_after_five_failures():
 
 ---
 
-## API Test First：補上 TDD 與 SDD 的弱點
+## 怎麼確保一致：API Test First
+
+常見的問題：文件、程式、測試各走各的。
+**API Test First 是一套開發規範**：以 API 契約為唯一來源，文件、規格、測試都從契約產生，程式必須通過測試。
+
+```mermaid
+flowchart LR
+    C["API 契約<br/>單一來源"] --> D["文件"]
+    C --> O["OpenAPI"]
+    O --> T["API 測試"]
+    T -->|必須通過| P["程式"]
+```
 
 ![API Test First](images/api-test-first-pyramid.svg)
-
-- TDD 的弱點：AI 同時寫實作和單元測試，等於**自己出題自己考**
-- SDD 的弱點：契約寫得再好，沒有測試去比對就管不住實作
-- **API 測試從契約推導，在實作之前先寫好**
 
 ---
 
 ## 為什麼要 API Test First
 
-1. **測試與實作獨立**：從契約推導，不從實作推導
-2. **讓規格有約束力**：契約變成可執行的檢查
+1. **單一來源**：改契約，文件、規格、測試一起更新
+2. **契約可以被檢查**：程式和契約不一致，測試直接失敗
 3. **最穩定的護欄**：內部怎麼重構，契約不變測試就不用改
 4. **人看得懂**：request / response 是人掌握功能的抓手
 5. **成本甜蜜點**：比 E2E 快又穩，比單元測試更接近真實行為
@@ -261,7 +280,7 @@ flowchart LR
 
 ---
 
-## Harness Engineering：讓 AI 自己修到過
+## 測試怎麼生成：Harness Engineering
 
 ```mermaid
 flowchart LR
@@ -274,6 +293,7 @@ flowchart LR
     C -->|否| P
 ```
 
+- 測試內容交給 AI 生成，harness 讓它反覆執行、驗證、修正到通過（flask-he）
 - Verifier **是程式不是 AI**，AI 不能改門檻
 - `scratchpad.md` 跨輪保存進度
 - **Runner 負責組好一次執行，Harness 負責重複到通過**
@@ -281,6 +301,8 @@ flowchart LR
 ---
 
 <!-- 第 3 部分 -->
+
+**Step 3 / 6 · Break Out the SDLC**
 
 # 3. 拆解
 ## 每個階段要交給 AI 哪些材料
@@ -385,7 +407,10 @@ flowchart LR
 
 <!-- 第 4 部分 -->
 
+**Step 4 / 6 · Unify the Command**
+
 # 4. Runner 的設計
+## 一支 script 貫通所有階段
 
 ---
 
@@ -455,6 +480,8 @@ my-flask-project/          ← REPO_ROOT（規範、現況、AI 的工作目錄�
 ---
 
 <!-- 第 5 部分 -->
+
+**Step 5 / 6 · Implementation**
 
 # 5. 實戰
 ## 會議記錄彙整系統
@@ -590,12 +617,9 @@ python ai-dev-tools/scripts/flask/validate_tests.py meeting-minute --kind integr
 
 <!-- 第 6 部分 -->
 
-# 6. 收尾
-## 人機邊界與設計原則
+**Step 6 / 6 · Takeaway**
 
----
-
-## AI 能做到哪裡，由權限決定
+## 6. 收尾：AI 能做到哪裡，由權限決定
 
 ```
 AI（hook）：分析 diff → 產生 message
@@ -635,6 +659,8 @@ AI（hook）：分析 diff → 產生 message
 ---
 
 <!-- 第 7 部分 -->
+
+**Step 6 / 6 · Takeaway（延伸）**
 
 # 7. 延伸討論
 ## 導入 AI 是組織管理的問題
@@ -698,19 +724,13 @@ AI（hook）：分析 diff → 產生 message
 | 資深工程師 | 設計流程與規範、最後驗收 |
 | 新角色：流程維護者 | 維護 hook、範本、steering、工具集 |
 
-**風險**：資淺工程師的成長路徑要刻意設計、過度信任 AI、技能貶值帶來的抗拒
-
----
-
-## 回應員工的三個顧慮
+**員工的三個顧慮** [12]
 
 | 顧慮 | AI-SDLC 的回應 |
 |------|---------------|
 | 不確定 AI 會做什麼 | `--dry-run` 公開 prompt；scratchpad 公開每一輪 |
 | 害怕被取代 | 明確定義每個角色的把關點 |
 | 害怕看起來能力不足 | 把「審查 AI 產出」「判斷真實結果」列為正式工作與評量項目 |
-
-<small>出處：HBS AI Institute [12]</small>
 
 ---
 

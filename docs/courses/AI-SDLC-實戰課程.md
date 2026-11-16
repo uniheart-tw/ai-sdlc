@@ -12,7 +12,7 @@
 ## 你會帶走什麼
 
 1. **為什麼要 AI-SDLC**：交談式、零散的 AI 開發帶來什麼管理問題，以及用流程確保專案一致性的思路；並拿傳統 SDLC（Software Development Life Cycle，軟體開發生命週期）與 AWS（Amazon Web Services）的 AI-DLC（AI-Driven Development Lifecycle，AI 驅動開發生命週期）對照，看清 AI-SDLC 的定位。
-2. **流程內建的開發方法**：TDD（Test-Driven Development，測試驅動開發）、BDD（Behavior-Driven Development，行為驅動開發）、SDD（Spec-Driven Development，規格驅動開發）各自用什麼規格文件、測試為什麼要分層、為什麼還需要 API（Application Programming Interface，應用程式介面）Test First，以及這些方法怎麼被寫進流程。
+2. **流程內建的開發方法**：TDD（Test-Driven Development，測試驅動開發）、BDD（Behavior-Driven Development，行為驅動開發）、SDD（Spec-Driven Development，規格驅動開發）三種定義需求的方式與本課程為何選擇 SDD、測試為什麼要分層、如何用 API（Application Programming Interface，應用程式介面）Test First 確保文件、程式與測試一致、如何用 harness 生成測試，以及這些方法怎麼被寫進流程。
 3. **一份 SDLC 材料清單**：需求、實作、測試、交付四個階段，各要交給 AI 哪些規範、範本與現況資料，哪些是使用者寫的、哪些是系統事先準備的，人又在哪裡把關。
 4. **一個心智模型**：Runner 是穩定的「prompt 編譯器」，Hook 是可替換的任務。runner 為五個元件（agent / model / steering / prompt / context）都留了位置，目前實際用到的是 model、steering、prompt、context。
 5. **Runner 的關鍵設計取捨**：任務怎麼註冊、設定的優先序、context script 的介面、組裝順序、dry-run、怎麼掛進別的專案、AI 的權限邊界畫在哪。
@@ -22,21 +22,34 @@
 ## 議程
 
 1. **開場**：為什麼要 AI-SDLC：為了管理，不是為了技術
-2. **預備觀念**：傳統 SDLC × AWS AI-DLC × AI-SDLC、TDD / BDD / SDD、測試金字塔、API Test First、Harness
+2. **預備觀念**：怎麼進行專案（SDLC × AI-DLC × AI-SDLC）、怎麼定義需求（TDD / BDD / SDD）、怎麼確保品質（測試金字塔）、怎麼確保一致（API Test First）、怎麼生成測試（Harness）
 3. **拆解**：每個 SDLC 階段的 hook 需要哪些材料
 4. **Runner 的設計**：一支通用 hook runner 的關鍵設計決策
 5. **實戰流程**：需求 → Issue → 實作 → PR → 合併；backend Issue 的 API Test First、測試生成與觀察性
 6. **收尾**：人機邊界、設計原則
 7. **延伸討論**：導入 AI 是組織管理的問題：流水線正規化、ROI、員工與組織的重新定位；Q&A
 
+### 課程主線：六個步驟
+
+整份課程依一條主線展開：先理解 AI 的能力與開發的難點，再介紹關鍵技術，接著把 SDLC 拆成階段、說清楚每個階段要交給 AI 什麼，然後用**一支 script（runner）把所有階段貫通**，最後實際跑一輪，收在可以帶走的原則上。
+
 ```mermaid
 flowchart LR
-    P["痛點<br/>交談式、零散、沒有規範的<br/>AI 開發，專案難以一致"] --> M["觀念<br/>SDLC × AI-DLC × AI-SDLC<br/>SDD / BDD / TDD<br/>API Test First"]
-    M --> D["拆解<br/>需求 / 實作 / 測試 / 交付<br/>各需要哪些材料"]
-    D --> E["Runner 的設計<br/>註冊、設定、context、<br/>組裝、dry-run、可攜與安全"]
-    E --> F["實戰<br/>git 管理、LLM 編碼、<br/>harness 測試、OpenTelemetry"]
-    F --> B["邊界<br/>AI 準備，人確認"]
+    K["1. Know AI & SDLC<br/>AI 能做什麼<br/>開發卡在哪裡"] --> T["2. The Key Techniques<br/>進行、需求、品質<br/>一致性、測試生成"]
+    T --> B["3. Break Out the SDLC<br/>每個階段要交給 AI<br/>哪些材料"]
+    B --> U["4. Unify the Command<br/>一支 runner script<br/>貫通所有階段"]
+    U --> I["5. Implementation<br/>一輪完整的實戰"]
+    I --> W["6. Takeaway<br/>人機邊界、設計原則<br/>導入的管理視角"]
 ```
+
+| 步驟 | 要回答的問題 | 對應章節 |
+|------|------------|---------|
+| 1. **Know AI & SDLC** | AI 現在能做到什麼？用 AI 開發，難點在哪裡？ | 第 1 節 開場 |
+| 2. **The Key Techniques** | 專案怎麼進行、需求怎麼定義、品質怎麼確保、文件程式測試怎麼一致、測試怎麼生成？ | 第 2 節 預備觀念 |
+| 3. **Break Out the SDLC** | 需求、實作、測試、交付各要交給 AI 哪些材料？人在哪裡把關？ | 第 3 節 拆解 |
+| 4. **Unify the Command** | 怎麼用同一支 runner 指令，把每個階段的任務組裝起來？ | 第 4 節 Runner 的設計 |
+| 5. **Implementation** | 從需求到 PR 合併，一輪完整的實戰長什麼樣？ | 第 5 節 實戰流程 |
+| 6. **Takeaway** | AI 與人的邊界畫在哪？導入時組織要怎麼調整？ | 第 6 節 收尾、第 7 節 延伸討論 |
 
 貫穿全文的三個問題，讀每一段時都可以回頭問：
 
@@ -143,13 +156,31 @@ flowchart TB
 
 ### 1.5 AI-SDLC 的定位
 
-後面會先把 AI-SDLC 放到 SDLC 的脈絡裡（2.1），再介紹被內建進流程的開發方法（2.2～2.4），最後拆解流程本身與支撐它的工具。
+後面會先用第 2 節回答「專案要怎麼做」的五個基本問題，再拆解流程本身與支撐它的工具。
 
 ---
 
 ## 2. 預備觀念
 
-### 2.1 SDLC × AI：傳統 SDLC、AWS AI-DLC 與我們的 AI-SDLC
+這一節依專案開發的順序，回答五個問題。每個問題的答案，之後都會被內建進流程裡：
+
+| 節 | 問題 | 本課程的答案 |
+|----|------|------------|
+| 2.1 | 專案要怎麼進行？ | 沿用 SDLC 的階段，每個階段放一個 AI hook（AI-SDLC） |
+| 2.2 | 需求要怎麼定義？ | TDD / BDD / SDD 都可以，本課程選擇 SDD |
+| 2.3 | 開發過程中怎麼確保品質？ | 測試分層（測試金字塔） |
+| 2.4 | 怎麼確保文件、程式與測試一致？ | API Test First |
+| 2.5 | 測試內容怎麼生成？ | Harness Engineering：讓 AI 迭代到測試通過 |
+
+```mermaid
+flowchart LR
+    Q1["2.1 怎麼進行<br/>AI-SDLC"] --> Q2["2.2 怎麼定義需求<br/>SDD"]
+    Q2 --> Q3["2.3 怎麼確保品質<br/>測試金字塔"]
+    Q3 --> Q4["2.4 怎麼確保一致<br/>API Test First"]
+    Q4 --> Q5["2.5 怎麼生成測試<br/>Harness"]
+```
+
+### 2.1 SDLC × AI：專案要怎麼進行
 
 今天的主題是 **AI-SDLC：用 AI 把 SDLC 的每個階段串起來，把開發方法內建在流程裡，確保專案的一致性**。
 它是我們從專案管理的需求自己長出來的做法。為了看清它的位置，拿兩個東西來對照：傳統 SDLC，以及 AWS 近期提出的 AI-DLC。
@@ -288,9 +319,11 @@ AI-SDLC 是我們從管理需求自己發展出來的，設計時並沒有參考
 
 > 參考：AWS DevOps Blog〈[AI-Driven Development Life Cycle: Reimagining Software Engineering](https://aws.amazon.com/blogs/devops/ai-driven-development-life-cycle/)〉；AI-DLC 階段與步驟圖出自 2026 亞馬遜港都 AI 創新日。
 
-### 2.2 TDD / BDD / SDD：三種「先定義對，再寫程式」
+### 2.2 TDD / BDD / SDD：需求要怎麼定義
 
-三種方法都主張**先定義「什麼叫做對」，再寫程式**，差別在回答的問題、參與的人、以及規格的寫法。
+定義需求的方式常見的有三種：TDD、BDD、SDD。三種都主張**先定義「什麼叫做對」，再寫程式**，差別在回答的問題、參與的人，以及規格的寫法。
+
+**三種都可以用，團隊選自己習慣的就好。** 這一節的目的是介紹它們各自的樣子，不是比較優劣。
 
 ```mermaid
 flowchart TB
@@ -310,7 +343,7 @@ flowchart TB
 | 主要參與者 | 開發者 | 開發、PM（Product Manager，產品經理）、QA（Quality Assurance，品質保證）一起討論（Three Amigos） | PM、架構師、開發者，以及 AI |
 | 核心循環 | Red → Green → Refactor | 討論範例 → 寫成情境 → 自動化 | 需求 → 規格 → 設計 → 任務 → 實作 |
 | 作用層級 | 任何層級；最常見於單元層，用在驗收層稱為 **ATDD**（Acceptance Test-Driven Development，驗收測試驅動開發） | 功能 / 驗收層 | 系統、功能、介面層 |
-| 弱點 | 只證明「程式符合測試」，不證明「測試符合需求」 | 情境一多，維護成本高 | 規格本身不會執行，沒有轉成測試就沒有約束力 |
+| 主要產物 | 測試程式 | `.feature` 情境檔 | 需求規格、設計文件、任務清單 |
 
 > TDD 不等於單元測試。TDD 是「先寫失敗的測試，再寫程式讓它通過」的**開發節奏**，可以用在任何層級；
 > 常見的做法是**雙迴圈 TDD**：外圈用驗收測試定義功能，內圈用單元測試驅動實作。
@@ -379,10 +412,17 @@ EARS 的五種句型：
 | State-driven | While [狀態], the system shall … | 當帳號處於鎖定狀態時，系統應拒絕所有登入 |
 | Optional | Where [功能啟用], the system shall … | 若啟用雙因素驗證，系統應要求輸入驗證碼 |
 
-> **三者不是互相取代，而是一路推導**：SDD 定義要做什麼，BDD 把它寫成可驗收的情境，TDD 確保每一段程式都做對。
 > 一條 EARS 需求、一個 Gherkin 情境、一個 AAA 測試，可以描述同一件事，只是精確度與受眾不同。
 
-### 2.3 測試金字塔：測試要分層
+#### 我們的選擇：SDD
+
+- 有人認為 TDD 的寫法對 AI 比較友善：測試本身就是精確的範例，AI 照著生成測試或實作比較不會偏。
+- 本課程選擇 **SDD**，原因是 **Kiro 建議的開發方式就是 SDD**：Kiro 的 Spec 以「需求（EARS）→ 設計 → 任務」的順序引導開發，流程與工具一致，參與者不必另外學一套寫法。
+- 選了 SDD 不代表不用另外兩種：EARS 的驗收條件仍會被寫成測試，實作時也照 TDD 的節奏「測試沒過就不算完成」。
+
+### 2.3 測試金字塔：開發過程中怎麼確保品質
+
+品質靠測試把關，而測試要分層。
 
 ![測試金字塔](images/test-pyramid.svg)
 
@@ -414,21 +454,27 @@ EARS 的五種句型：
 
 > 金字塔的重點不是固定的比例，而是**每一層都要有，而且要知道每一層在保護什麼**。
 
-### 2.4 API Test First：為什麼要先寫中間那一層
+### 2.4 API Test First：怎麼確保文件、程式與測試一致
 
-回到 2.2 的弱點與 2.3 的金字塔：
+專案開發久了，最常出現的問題是三樣東西各走各的：文件寫的是一套、程式做的是一套、測試測的又是一套。
+**API Test First 是一套開發規範，用來確保這三者一致**：以 API 契約為唯一來源，文件、OpenAPI 規格與 API 測試都從契約產生，程式則必須通過這些測試。
 
-- **TDD 的弱點**：只證明「程式符合測試」。當同一個人（或同一個 AI）同時寫實作和單元測試，測試很容易遷就實作，等於**自己出題自己考**。
-- **SDD 的弱點**：規格不會執行。API 契約寫得再漂亮，沒有測試去比對，實作偏掉了也沒人知道。
+```mermaid
+flowchart LR
+    C["API 契約<br/>（單一來源）"] --> D["文件<br/>API_REFERENCE"]
+    C --> O["規格<br/>OpenAPI"]
+    O --> T["API 測試"]
+    T -->|"必須通過"| P["程式"]
+```
 
-**API Test First 就是把這兩個弱點接起來的那一層**：在金字塔的中間層，測試**從 API 契約（SDD 的產物）推導**，不從實作推導，並且用 TDD 的節奏在實作之前先寫好。
+做法是在金字塔的中間層，**先依契約寫好 API 測試，再寫實作**。
 
 ![API Test First 在測試金字塔中的位置](images/api-test-first-pyramid.svg)
 
 #### 為什麼要 API Test First
 
-1. **測試與實作獨立**：從契約推導，不是從實作推導，避免自己出題自己考。
-2. **讓規格有約束力**：把 API 契約變成可執行的檢查，SDD 的規格才真的「管得住」程式。
+1. **單一來源**：文件、規格、測試都從同一份契約來，改契約就同時更新三者。
+2. **讓契約可以被檢查**：契約變成可執行的測試，程式和契約不一致時，測試會直接失敗。
 3. **BDD 情境在後端最自然的落點**：Given / When / Then 剛好對應「準備資料 / 送出 request / 驗證 response」。
 4. **最穩定的護欄**：內部怎麼重構、AI 怎麼重寫，只要契約不變，API 測試就不用改。
 5. **人看得懂**：request / response 比滿是 mock 的單元測試容易審查，PM 與使用者也能確認行為，這是**人掌握整個功能的抓手**。
@@ -457,7 +503,9 @@ flowchart LR
 - **只改來源，不改生成物**：契約是來源，OpenAPI 與合併後的文件由工具產生，不手改。
 - **API model ≠ DB（Database，資料庫）schema**：回應形狀以 API 契約為準，不拿資料表欄位當 API 規格。
 
-### 2.5 Harness Engineering：讓 AI 自己修到過
+### 2.5 Harness Engineering：測試內容怎麼生成
+
+契約與測試的規範定好之後，測試內容交給 AI 生成。但 AI 一次很難寫對，所以用 harness 讓它反覆執行、驗證、修正，直到測試通過為止（實戰中的 flask-he 就是這樣生成單元與整合測試）。
 
 ```mermaid
 flowchart TB
@@ -614,7 +662,7 @@ flowchart LR
 
 ### 3.4 測試：API 測試由人主導
 
-單元測試在實作中已經完成，但 **API 測試（整合測試）要由人主導**，原因就是 2.4 講的：
+單元測試在實作中已經完成，但 **API 測試（整合測試）要由人主導**：
 
 - 單元測試是 AI 寫實作時一併產生的，**可能遷就實作**。
 - API 測試從契約推導，是**人確認「這個功能真的是我要的」的地方**：看得懂 request / response，就掌握了整個功能的行為。
