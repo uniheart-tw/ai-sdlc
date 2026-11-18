@@ -1028,3 +1028,33 @@ AI（hook）：分析 diff → 產生 message
 
 **AI 準備，人確認。**
 照著流程走，就是照著規範做。
+
+---
+
+<!-- 業配：EZ-Deploy -->
+
+# 做完了，然後呢？
+## 讓作品上線：EZ-Deploy
+
+用 AI-SDLC 做出的作品，下一步是**讓別人用得到**。
+
+- 不用自己架伺服器，也不用處理複雜的部署
+- 把網頁檔案上傳到平台，就能產生瀏覽連結，直接分享給客戶、同事或合作夥伴
+- 作品頁、活動頁、產品介紹頁、臨時測試頁，都可以快速發布、隨時更新
+- 提供 Email 通知服務：表單送出就寄信，不必自己寫寄信後端（範例：`uniheart-tw/EZ-Deploy-demo` 點餐系統）
+
+**官方網站（可免費試用）**：https://shop.uniheart.com.tw/
+
+---
+
+## EZ-Deploy 教學影片
+
+| 拖拉上傳，作品直接上線 | 解鎖付費功能，讓作品可以收費 |
+|:---:|:---:|
+| [![EZ-Deploy 基本使用教程](https://i.ytimg.com/vi/LTV4pbzrEnM/hqdefault.jpg)](https://youtu.be/LTV4pbzrEnM) | [![EZ-Deploy 付費解鎖功能](https://i.ytimg.com/vi/-QqIpKLV-5Y/hqdefault.jpg)](https://youtu.be/-QqIpKLV-5Y) |
+| **EZ-Deploy 基本使用教程** | **EZ-Deploy 付費解鎖功能** |
+| https://youtu.be/LTV4pbzrEnM | https://youtu.be/-QqIpKLV-5Y |
+
+> 從**做出來**、**放上去**，到**收得到錢**：一個人也能把想法變成產品。
+
+**官方網站**：https://shop.uniheart.com.tw/

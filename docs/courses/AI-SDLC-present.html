@@ -1,0 +1,1590 @@
+<!DOCTYPE html><html><head>
+      <title>AI-SDLC：AI 驅動的軟體開發生命週期</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/katex.min.css">
+      
+      
+      
+      <script src="https://cdn.jsdelivr.net/npm/mermaid@12.0.0/dist/mermaid.min.js"></script>
+      
+      
+      
+      <style>
+      code[class*=language-],pre[class*=language-]{color:#333;background:0 0;font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.4;-moz-tab-size:8;-o-tab-size:8;tab-size:8;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*=language-]{padding:.8em;overflow:auto;border-radius:3px;background:#f5f5f5}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal;background:#f5f5f5}.token.blockquote,.token.comment{color:#969896}.token.cdata{color:#183691}.token.doctype,.token.macro.property,.token.punctuation,.token.variable{color:#333}.token.builtin,.token.important,.token.keyword,.token.operator,.token.rule{color:#a71d5d}.token.attr-value,.token.regex,.token.string,.token.url{color:#183691}.token.atrule,.token.boolean,.token.code,.token.command,.token.constant,.token.entity,.token.number,.token.property,.token.symbol{color:#0086b3}.token.prolog,.token.selector,.token.tag{color:#63a35c}.token.attr-name,.token.class,.token.class-name,.token.function,.token.id,.token.namespace,.token.pseudo-class,.token.pseudo-element,.token.url-reference .token.variable{color:#795da3}.token.entity{cursor:help}.token.title,.token.title .token.punctuation{font-weight:700;color:#1d3e81}.token.list{color:#ed6a43}.token.inserted{background-color:#eaffea;color:#55a532}.token.deleted{background-color:#ffecec;color:#bd2c00}.token.bold{font-weight:700}.token.italic{font-style:italic}.language-json .token.property{color:#183691}.language-markup .token.tag .token.punctuation{color:#333}.language-css .token.function,code.language-css{color:#0086b3}.language-yaml .token.atrule{color:#63a35c}code.language-yaml{color:#183691}.language-ruby .token.function{color:#333}.language-markdown .token.url{color:#795da3}.language-makefile .token.symbol{color:#795da3}.language-makefile .token.variable{color:#183691}.language-makefile .token.builtin{color:#0086b3}.language-bash .token.keyword{color:#0086b3}pre[data-line]{position:relative;padding:1em 0 1em 3em}pre[data-line] .line-highlight-wrapper{position:absolute;top:0;left:0;background-color:transparent;display:block;width:100%}pre[data-line] .line-highlight{position:absolute;left:0;right:0;padding:inherit 0;margin-top:1em;background:hsla(24,20%,50%,.08);background:linear-gradient(to right,hsla(24,20%,50%,.1) 70%,hsla(24,20%,50%,0));pointer-events:none;line-height:inherit;white-space:pre}pre[data-line] .line-highlight:before,pre[data-line] .line-highlight[data-end]:after{content:attr(data-start);position:absolute;top:.4em;left:.6em;min-width:1em;padding:0 .5em;background-color:hsla(24,20%,50%,.4);color:#f4f1ef;font:bold 65%/1.5 sans-serif;text-align:center;vertical-align:.3em;border-radius:999px;text-shadow:none;box-shadow:0 1px #fff}pre[data-line] .line-highlight[data-end]:after{content:attr(data-end);top:auto;bottom:.4em}html body{font-family:'Helvetica Neue',Helvetica,'Segoe UI',Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ol,html body>ul{margin-bottom:16px}html body ol,html body ul{padding-left:2em}html body ol.no-list,html body ul.no-list{padding:0;list-style-type:none}html body ol ol,html body ol ul,html body ul ol,html body ul ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:700;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:700}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::after,html body code::before{letter-spacing:-.2em;content:'\00a0'}html body pre>code{padding:0;margin:0;word-break:normal;white-space:pre;background:0 0;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:after,html body pre code:before,html body pre tt:after,html body pre tt:before{content:normal}html body blockquote,html body dl,html body ol,html body p,html body pre,html body ul{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body code,html body pre{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview ul{list-style:disc}.markdown-preview ul ul{list-style:circle}.markdown-preview ul ul ul{list-style:square}.markdown-preview ol{list-style:decimal}.markdown-preview ol ol,.markdown-preview ul ol{list-style-type:lower-roman}.markdown-preview ol ol ol,.markdown-preview ol ul ol,.markdown-preview ul ol ol,.markdown-preview ul ul ol{list-style-type:lower-alpha}.markdown-preview .newpage,.markdown-preview .pagebreak{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview pre[data-line]{position:relative;padding:1em 0 1em 3em!important}.markdown-preview pre[data-line]>code{position:relative;z-index:1}.markdown-preview pre[data-line] .line-numbers-rows{z-index:1}.markdown-preview pre[data-line] .line-highlight-wrapper{position:absolute;top:0;left:0;background-color:transparent;pointer-events:none;display:block;width:100%}.markdown-preview pre[data-line] .line-highlight{position:absolute;left:0;right:0;padding:inherit 0;margin-top:1em;background:hsla(24,20%,50%,.08);background:var(--line-highlight-background,linear-gradient(to right,hsla(24,20%,50%,.1) 70%,hsla(24,20%,50%,0)));line-height:inherit;white-space:pre}.markdown-preview pre[data-line] .line-highlight:before,.markdown-preview pre[data-line] .line-highlight[data-end]:after{content:attr(data-start);position:absolute;top:.4em;left:.6em;min-width:1em;padding:0 .5em;background-color:hsla(24,20%,50%,.4);color:#f4f1ef;font:bold 65%/1.5 sans-serif;text-align:center;vertical-align:.3em;border-radius:999px;text-shadow:none}.markdown-preview pre[data-line] .line-highlight[data-end]:after{content:attr(data-end);top:auto;bottom:.4em}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center!important}.markdown-preview:not([data-for=preview]) .code-chunk .code-chunk-btn-group{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .status{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .output-div{margin-bottom:16px}.markdown-preview .md-toc{padding:0}.markdown-preview .md-toc .md-toc-details{margin:0;padding:0;border:none}.markdown-preview .md-toc ol.md-toc-ol{margin:0;padding-left:1.6em}.markdown-preview .md-toc summary.md-toc-link-wrapper{cursor:pointer;list-style-position:outside}.markdown-preview .md-toc summary.md-toc-link-wrapper::marker{font-size:.85em}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link div,.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}.markdown-preview .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}.markdown-preview .md-toc .md-toc-link-wrapper[data-level='0']{margin-left:12px}.markdown-preview .md-toc .md-toc-link-wrapper[data-level='1']{margin-left:28px}.markdown-preview .md-toc .md-toc-link-wrapper[data-level='2']{margin-left:44px}.markdown-preview .md-toc .md-toc-link-wrapper[data-level='3']{margin-left:60px}.markdown-preview .md-toc .md-toc-link-wrapper[data-level='4']{margin-left:76px}.markdown-preview .md-toc .md-toc-link-wrapper[data-level='5']{margin-left:80px}.markdown-preview a.tag,.markdown-preview a.tag:active,.markdown-preview a.tag:link,.markdown-preview a.tag:visited,.markdown-preview span.tag:not(.token){display:inline-block;background-color:var(--vscode-badge-background,rgba(127,127,127,.18));color:var(--vscode-badge-foreground,currentColor);border-radius:2em;font-size:.85em;font-weight:500;padding:.05em .55em;line-height:1.5;white-space:nowrap;text-decoration:none;text-shadow:none;box-shadow:none;transition:background-color .12s ease,opacity .12s ease}.markdown-preview a.tag{cursor:pointer}.markdown-preview a.tag:focus,.markdown-preview a.tag:hover{background-color:var(--vscode-badge-background,rgba(127,127,127,.32));color:var(--vscode-badge-foreground,currentColor);opacity:.85;text-decoration:none;outline:0}.markdown-preview .wikilink-embed-content{border-left:3px solid var(--vscode-textBlockQuote-border,rgba(128,128,128,.3));background:var(--vscode-textBlockQuote-background,rgba(128,128,128,.05));margin:.5em 0;padding:.5em .75em;border-radius:0 3px 3px 0}.markdown-preview .wikilink-embed-content.wikilink-embed-error{border-left-color:var(--vscode-errorForeground,#cf222e);color:var(--vscode-errorForeground,#cf222e);font-style:italic;opacity:.8}.markdown-preview .wikilink-embed-content h1:first-child,.markdown-preview .wikilink-embed-content h2:first-child,.markdown-preview .wikilink-embed-content h3:first-child,.markdown-preview .wikilink-embed-content h4:first-child,.markdown-preview .wikilink-embed-content h5:first-child,.markdown-preview .wikilink-embed-content h6:first-child{margin-top:.25em}.markdown-preview .wikilink-embed-content .wikilink-embed-content{margin:.25em 0;padding:.25em .5em}.markdown-preview .block-id{display:none}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:var(--vscode-scrollbarSlider-background,rgba(150,150,150,.66));border:4px solid var(--vscode-scrollbarSlider-background,rgba(150,150,150,.66));background-clip:content-box}.scrollbar-style::-webkit-scrollbar-thumb:hover{background-color:var(--vscode-scrollbarSlider-hoverBackground,rgba(120,120,120,.66))}html body[for=html-export]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0;min-height:100vh}@media screen and (min-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{font-size:14px!important;padding:1em}}@media print{html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:var(--vscode-scrollbarSlider-background,rgba(150,150,150,.66));border:4px solid var(--vscode-scrollbarSlider-background,rgba(150,150,150,.66));background-clip:content-box}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb:hover{background-color:var(--vscode-scrollbarSlider-hoverBackground,rgba(120,120,120,.66))}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc{padding:0 16px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-details{margin:0;padding:0;border:none}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc ol.md-toc-ol{margin:0;padding-left:1.6em}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link div,html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper[data-level='0']{padding-left:0}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper[data-level='1']{padding-left:16px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper[data-level='2']{padding-left:32px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper[data-level='3']{padding-left:48px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper[data-level='4']{padding-left:64px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper[data-level='5']{padding-left:80px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% - 300px);padding:2em calc(50% - 457px - 300px / 2);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+      
+    </head>
+    <body for="html-export">
+      <div class="crossnote markdown-preview  ">
+      
+<h1 id="ai-sdlc">AI-SDLC </h1>
+<h2 id="ai-驅動的軟體開發生命週期python-flask-篇">AI 驅動的軟體開發生命週期（Python Flask 篇） </h2>
+<blockquote>
+<p>我們不是為了技術而導入 AI，是為了管理。</p>
+</blockquote>
+<p>完整內容：<a href="./AI-SDLC-%E5%AF%A6%E6%88%B0%E8%AA%B2%E7%A8%8B.md">AI-SDLC-實戰課程.md</a></p>
+<hr>
+<h2 id="課程主線七個步驟">課程主線：七個步驟 </h2>
+<div class="mermaid">flowchart LR
+    K["1. Know AI &amp; the SDLC&lt;br/&gt;認識 AI 與 SDLC"] --&gt; T["2. Adopt the Key Techniques&lt;br/&gt;採用關鍵技術"]
+    T --&gt; B["3. Break Down the SDLC&lt;br/&gt;拆解 SDLC"]
+    B --&gt; U["4. Simplify the Complex&lt;br/&gt;以簡馭繁"]
+    U --&gt; I["5. Implement a Full Cycle&lt;br/&gt;實作一輪完整流程"]
+    I --&gt; W["6. Wrap Up the Lessons&lt;br/&gt;總結"]
+    W --&gt; E["7. Extend It to the Organization&lt;br/&gt;延伸到組織"]
+</div><table>
+<thead>
+<tr>
+<th>步驟</th>
+<th>要回答的問題</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Know AI &amp; the SDLC</td>
+<td>AI 能做到什麼？用 AI 開發難在哪？</td>
+</tr>
+<tr>
+<td>2. Adopt the Key Techniques</td>
+<td>怎麼進行、定義需求、確保品質與一致、生成測試？</td>
+</tr>
+<tr>
+<td>3. Break Down the SDLC</td>
+<td>每個階段要交給 AI 哪些材料？</td>
+</tr>
+<tr>
+<td>4. Simplify the Complex</td>
+<td>怎麼用一支 runner 貫通所有階段？</td>
+</tr>
+<tr>
+<td>5. Implement a Full Cycle</td>
+<td>一輪完整的實戰</td>
+</tr>
+<tr>
+<td>6. Wrap Up the Lessons</td>
+<td>人機邊界、設計原則</td>
+</tr>
+<tr>
+<td>7. Extend It to the Organization</td>
+<td>導入的投資、員工與組織</td>
+</tr>
+</tbody>
+</table>
+<p>貫穿全場的三個問題：<strong>介面是什麼？誰是事實來源？人在哪裡把關？</strong></p>
+<hr>
+<p><strong>Step 1 / 7 · Know AI &amp; the SDLC</strong></p>
+<h1 id="1-開場">1. 開場 </h1>
+<h2 id="為什麼要-ai-sdlc">為什麼要 AI-SDLC </h2>
+<hr>
+<h2 id="人類對-ai-的期望openai-的五個等級">人類對 AI 的期望：OpenAI 的五個等級 </h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">等級</th>
+<th>名稱</th>
+<th>能做到什麼</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td>聊天機器人</td>
+<td>用自然語言對話</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td>推理者</td>
+<td>解決基本問題</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td>代理人</td>
+<td>代表使用者執行任務</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td>創新者</td>
+<td>協助發明與創新</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td>組織</td>
+<td>不需人介入，完成整個組織的工作</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>寫程式已進入第 3 級：AI 能讀檔、改程式、跑測試、commit</li>
+<li>第 5 級「完全交給 AI」不切實際：能力再強，組織也不會把管理完全授權給沒有監督的對象，對人對 AI 都一樣</li>
+<li>AI-SDLC 的詮釋：組織等級的 AI 是<strong>把 AI 融入組織活動</strong>，AI 負責產出，人負責定義、審查與判斷</li>
+<li><strong>所以問題變成管理問題：怎麼讓 AI 照規範做事，人在哪裡把關</strong></li>
+</ul>
+<p><small>出處：Bloomberg（2024-07-11）。這是 OpenAI 內部分類，不是業界標準。</small></p>
+<hr>
+<h2 id="問題每個人都用自己的方式跟-ai-開發">問題：每個人都用自己的方式跟 AI 開發 </h2>
+<table>
+<thead>
+<tr>
+<th>現象</th>
+<th>管理上的後果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>交談式開發</td>
+<td>同一件事，兩個人做出兩種樣子</td>
+</tr>
+<tr>
+<td>零散</td>
+<td>需求和程式對不起來</td>
+</tr>
+<tr>
+<td>沒有規範</td>
+<td>只能靠 code review 事後抓</td>
+</tr>
+<tr>
+<td>參與者流動</td>
+<td>每來一個人就要重新教、持續盯</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>問題不在 AI 不夠聰明，而在<strong>每個人用 AI 的方式都不一樣</strong>。<br>
+傳統解法是教育與監督：寫規範、辦訓練、code review、專人監督。成本高、事後才發現、規模大就管不動。</p>
+</blockquote>
+<hr>
+<h2 id="我們的解法把規範內建在流程裡">我們的解法：把規範內建在流程裡 </h2>
+<table>
+<thead>
+<tr>
+<th>以前靠人</th>
+<th>現在靠流程</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>教大家寫需求</td>
+<td>AI 照 PRD、EARS、Issue 範本產生</td>
+</tr>
+<tr>
+<td>提醒先寫測試</td>
+<td>測試沒過就不算完成</td>
+</tr>
+<tr>
+<td>盯 commit 格式</td>
+<td>一律產生 Conventional Commits，順便更新 README</td>
+</tr>
+<tr>
+<td>檢查 PR 有沒有連 Issue</td>
+<td>從分支名稱自動寫上 <code>Closes #N</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>目標是<strong>專案的一致性</strong>：人從「教育與監督」轉為「在固定的點上確認」。</p>
+</blockquote>
+<hr>
+<h2 id="要補上-ai-的三個盲點">要補上 AI 的三個盲點 </h2>
+<table>
+<thead>
+<tr>
+<th>AI 不擅長</th>
+<th>流程要提供的</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>知道專案沒寫下來的潛規則</td>
+<td><strong>規範</strong>：範本、開發方法、專案背景</td>
+</tr>
+<tr>
+<td>自己找現在的 diff、Issue、路由表</td>
+<td><strong>現況</strong>：每次自動收集的上下文</td>
+</tr>
+<tr>
+<td>判斷什麼時候算完成</td>
+<td><strong>完成條件</strong>：可以自動驗證的測試</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><strong>Step 2 / 7 · Adopt the Key Techniques</strong></p>
+<h1 id="2-預備觀念">2. 預備觀念 </h1>
+<h2 id="專案開發的五個基本問題">專案開發的五個基本問題 </h2>
+<table>
+<thead>
+<tr>
+<th>問題</th>
+<th>本課程的答案</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>專案要怎麼進行？</td>
+<td>AI-SDLC</td>
+</tr>
+<tr>
+<td>需求要怎麼定義？</td>
+<td>SDD</td>
+</tr>
+<tr>
+<td>怎麼確保品質？</td>
+<td>測試金字塔</td>
+</tr>
+<tr>
+<td>怎麼確保文件、程式、測試一致？</td>
+<td>API Test First</td>
+</tr>
+<tr>
+<td>測試內容怎麼生成？</td>
+<td>Harness Engineering</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="專案怎麼進行傳統-sdlc-與-aws-ai-dlc">專案怎麼進行：傳統 SDLC 與 AWS AI-DLC </h2>
+<div class="mermaid">flowchart LR
+    R["需求&lt;br/&gt;PM"] --&gt;|交接| D["設計&lt;br/&gt;架構師"]
+    D --&gt;|交接| I["實作&lt;br/&gt;工程師"]
+    I --&gt;|交接| T["測試&lt;br/&gt;QA"]
+    T --&gt;|交接| P["部署 / 維運"]
+    P -.-&gt;|下一個 sprint| R
+</div><p>AI 只是輔助工具，流程本身沒有改變，交接仍由人負責。</p>
+<p><strong>對照組 AWS AI-DLC：以開發速度為目標，重新設計生命週期</strong>（3 階段 9 步驟）</p>
+<div class="mermaid">flowchart LR
+    IN["發想&lt;br/&gt;Inception"] ==&gt;|情境累積| CO["建構&lt;br/&gt;Construction"]
+    CO ==&gt;|情境累積| OP["營運&lt;br/&gt;Operations"]
+</div><ul>
+<li>每個活動都是：AI 擬計畫 → AI 提問 → <strong>人確認</strong> → AI 執行</li>
+<li>重新定義儀式：Sprint → <strong>Bolt</strong>（以小時或天計）、Epic → <strong>Unit of Work</strong></li>
+<li>團隊以 Mob Elaboration / Mob Construction 一起確認 AI 的提案</li>
+</ul>
+<hr>
+<h2 id="我們的-ai-sdlc沿用-sdlc把方法內建進每個階段">我們的 AI-SDLC：沿用 SDLC，把方法內建進每個階段 </h2>
+<div class="mermaid">flowchart LR
+    H1["需求 / 設計&lt;br/&gt;git-issues"] --&gt; G1{"全體人員&lt;br/&gt;審 PRD 與 Issue"}
+    G1 --&gt; H2["實作&lt;br/&gt;git-issue-resolve"]
+    H2 --&gt;|測試全綠| H3["測試&lt;br/&gt;API 測試"]
+    H3 --&gt; G3{"資淺工程師&lt;br/&gt;執行整合測試"}
+    G3 --&gt; H4["交付&lt;br/&gt;commit / PR"]
+    H4 --&gt; G4{"資深工程師&lt;br/&gt;最後驗收"}
+</div><hr>
+<h2 id="每個階段誰把關-內建什麼方法">每個階段：誰把關、內建什麼方法 </h2>
+<table>
+<thead>
+<tr>
+<th>階段</th>
+<th>誰確認</th>
+<th>內建的方法</th>
+<th>參與者不用再被教的事</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>需求 / 設計</td>
+<td><strong>全體人員</strong></td>
+<td>SDD：PRD、EARS、Issue 格式</td>
+<td>需求怎麼寫、Issue 怎麼拆</td>
+</tr>
+<tr>
+<td>實作</td>
+<td><strong>不需要人</strong></td>
+<td>TDD + Harness</td>
+<td>做到哪裡算完成</td>
+</tr>
+<tr>
+<td>測試</td>
+<td><strong>資淺工程師</strong>執行最後整合測試</td>
+<td>API Test First</td>
+<td>要測哪些情境、錯誤碼</td>
+</tr>
+<tr>
+<td>交付</td>
+<td>CI/CD + <strong>資深工程師</strong>驗收</td>
+<td>Conventional Commits、PR 範本</td>
+<td>commit / PR 格式、文件更新</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>每個階段的產物都存在 repo 或 GitHub，下一個 hook 再把它收集交給 AI，<strong>整條流程串在一起</strong>。</p>
+</blockquote>
+<hr>
+<h2 id="三者比較">三者比較 </h2>
+<table>
+<thead>
+<tr>
+<th>面向</th>
+<th>傳統 SDLC</th>
+<th>AWS AI-DLC</th>
+<th>AI-SDLC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>出發點</td>
+<td>—</td>
+<td><strong>開發速度</strong></td>
+<td><strong>專案管理、一致性</strong></td>
+</tr>
+<tr>
+<td>階段</td>
+<td>6 階段</td>
+<td>3 階段 9 步驟</td>
+<td>沿用 SDLC</td>
+</tr>
+<tr>
+<td>開發方法放哪</td>
+<td>文件與訓練</td>
+<td>Mob 儀式中確認</td>
+<td><strong>寫進每個 hook</strong></td>
+</tr>
+<tr>
+<td>工作拆分</td>
+<td>Epic / Story</td>
+<td>Unit of Work</td>
+<td>GitHub Issue</td>
+</tr>
+<tr>
+<td>對參與者的要求</td>
+<td>自律遵守</td>
+<td>參與 Mob 儀式</td>
+<td><strong>會用流程即可</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>AI-DLC 為了速度重新設計流程；AI-SDLC 為了管理，把方法內建在現有流程裡。<br>
+兩者出發點不同，但都採用「AI 產出、人確認」「情境逐步累積」「產物存進專案」。</p>
+</blockquote>
+<hr>
+<h2 id="需求怎麼定義tdd--bdd--sdd">需求怎麼定義：TDD / BDD / SDD </h2>
+<div class="mermaid">flowchart LR
+    SDD["SDD&lt;br/&gt;要做的是什麼？"] --&gt;|需求 → 驗收情境| BDD["BDD&lt;br/&gt;行為符合期待嗎？"]
+    BDD --&gt;|情境 → 測試案例| TDD["TDD&lt;br/&gt;程式做對了嗎？"]
+</div><table>
+<thead>
+<tr>
+<th></th>
+<th>TDD</th>
+<th>BDD</th>
+<th>SDD</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>參與者</td>
+<td>開發者</td>
+<td>開發、PM、QA</td>
+<td>PM、架構師、開發者、AI</td>
+</tr>
+<tr>
+<td>規範</td>
+<td>AAA、測試命名</td>
+<td>Gherkin</td>
+<td>EARS、PRD、OpenAPI</td>
+</tr>
+<tr>
+<td>主要產物</td>
+<td>測試程式</td>
+<td><code>.feature</code> 情境檔</td>
+<td>需求、設計、任務文件</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>三種都可以，<strong>團隊選自己習慣的</strong>；這裡只是介紹，不比較優劣。</p>
+</blockquote>
+<hr>
+<h2 id="同一條需求的三種寫法">同一條需求的三種寫法 </h2>
+<p><strong>SDD（EARS）</strong><br>
+<code>If 使用者連續輸入錯誤密碼 5 次, then the system shall 鎖定帳號 15 分鐘。</code></p>
+<p><strong>BDD（Gherkin）</strong></p>
+<pre data-role="codeBlock" data-info="gherkin" class="language-gherkin gherkin"><code><span class="token scenario"><span class="token keyword keyword-Scenario:">Scenario:</span><span class="token important"> 連續輸入錯誤密碼後鎖定帳號</span></span>
+  <span class="token atrule">Given</span> 使用者帳號已連續登入失敗 4 次
+  <span class="token atrule">When</span> 使用者再次輸入錯誤密碼
+  <span class="token atrule">Then</span> 帳號被鎖定 15 分鐘
+</code></pre><p><strong>TDD（AAA）</strong></p>
+<pre data-role="codeBlock" data-info="python" class="language-python python"><code><span class="token keyword keyword-def">def</span> <span class="token function">test_login_locks_account_after_five_failures</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    account <span class="token operator">=</span> Account<span class="token punctuation">(</span>failed_attempts<span class="token operator">=</span><span class="token number">4</span><span class="token punctuation">)</span>          <span class="token comment"># Arrange</span>
+    result <span class="token operator">=</span> login<span class="token punctuation">(</span>account<span class="token punctuation">,</span> password<span class="token operator">=</span><span class="token string">"wrong"</span><span class="token punctuation">)</span>     <span class="token comment"># Act</span>
+    <span class="token keyword keyword-assert">assert</span> result<span class="token punctuation">.</span>locked_minutes <span class="token operator">==</span> <span class="token number">15</span>            <span class="token comment"># Assert</span>
+</code></pre><p><strong>我們的選擇：SDD</strong></p>
+<ul>
+<li>有人認為 TDD 的寫法對 AI 生成測試比較友善</li>
+<li>本課程選 SDD，因為 <strong>Kiro 建議的開發方式就是 SDD</strong>（Spec：需求 → 設計 → 任務）</li>
+</ul>
+<hr>
+<h2 id="怎麼確保品質測試金字塔">怎麼確保品質：測試金字塔 </h2>
+<p><img src="data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDQwIDUwMCIgd2lkdGg9IjEwNDAiIGhlaWdodD0iNTAwIiByb2xlPSJpbWciIGFyaWEtbGFiZWxsZWRieT0idGl0bGUgZGVzYyI+CiAgPHRpdGxlIGlkPSJ0aXRsZSI+5ris6Kmm6YeR5a2X5aGUPC90aXRsZT4KICA8ZGVzYyBpZD0iZGVzYyI+5LiJ5bGk6YeR5a2X5aGU77ya6aCC56uv5pivIEUyRSDoiIcgVUkg5ris6Kmm77yM5pW46YeP5bCR77yb5Lit6ZaT5piv5pW05ZCI6IiHIEFQSSDmuKzoqabvvIzmlbjph4/kuK3nrYnvvJvlupXpg6jmmK/llq7lhYPmuKzoqabvvIzmlbjph4/mnIDlpJrjgILotorlvoDkuIrotormhaLjgIHotorosrTjgIHotormjqXov5Hkvb/nlKjogIXvvJvotorlvoDkuIvotorlpJrjgIHotorlv6vjgIHotorkvr/lrpzjgII8L2Rlc2M+CiAgPHN0eWxlPgogICAgdGV4dCB7IGZvbnQtZmFtaWx5OiAiUGluZ0ZhbmcgVEMiLCAiTm90byBTYW5zIFRDIiwgIk1pY3Jvc29mdCBKaGVuZ0hlaSIsIHNhbnMtc2VyaWY7IGZpbGw6ICMyMDIxMjQ7IH0KICAgIC5sYXllciB7IGZvbnQtc2l6ZTogMjJweDsgZm9udC13ZWlnaHQ6IDcwMDsgfQogICAgLnN1YiB7IGZvbnQtc2l6ZTogMTVweDsgfQogICAgLnRvb2wgeyBmb250LXNpemU6IDEzcHg7IGZpbGw6ICMzYzQwNDM7IH0KICAgIC5ub3RlIHsgZm9udC1zaXplOiAxN3B4OyB9CiAgICAubm90ZS1iIHsgZm9udC1zaXplOiAxN3B4OyBmb250LXdlaWdodDogNzAwOyB9CiAgPC9zdHlsZT4KICA8ZGVmcz4KICAgIDxtYXJrZXIgaWQ9ImFycm93IiB2aWV3Qm94PSIwIDAgMTAgMTAiIHJlZlg9IjUiIHJlZlk9IjUiIG1hcmtlcldpZHRoPSI3IiBtYXJrZXJIZWlnaHQ9IjciIG9yaWVudD0iYXV0by1zdGFydC1yZXZlcnNlIj4KICAgICAgPHBhdGggZD0iTTAsMCBMMTAsNSBMMCwxMCB6IiBmaWxsPSIjNWY2MzY4Ii8+CiAgICA8L21hcmtlcj4KICA8L2RlZnM+CgogIDxwb2x5Z29uIHBvaW50cz0iMzMwLDQwIDQxNywxNjAgMjQzLDE2MCIgZmlsbD0iI0Y2QUVBOSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjMiLz4KICA8dGV4dCBjbGFzcz0ibGF5ZXIiIHg9IjMzMCIgeT0iMTIyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5FMkUgLyBVSTwvdGV4dD4KICA8dGV4dCBjbGFzcz0ic3ViIiB4PSIzMzAiIHk9IjE0OCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+5bCR6YePPC90ZXh0PgoKICA8cG9seWdvbiBwb2ludHM9IjI0MywxNjAgNDE3LDE2MCA1MTguNSwzMDAgMTQxLjUsMzAwIiBmaWxsPSIjRkRFMjkzIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMyIvPgogIDx0ZXh0IGNsYXNzPSJsYXllciIgeD0iMzMwIiB5PSIyMTgiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuaVtOWQiCAvIEFQSSDmuKzoqaY8L3RleHQ+CiAgPHRleHQgY2xhc3M9InN1YiIgeD0iMzMwIiB5PSIyNDYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuS4remHj+ODu+mpl+itieWFg+S7tuS5i+mWk+iIh+WwjeWkluS7i+mdojwvdGV4dD4KICA8dGV4dCBjbGFzcz0idG9vbCIgeD0iMzMwIiB5PSIyNzIiIHRleHQtYW5jaG9yPSJtaWRkbGUiPnB5dGVzdCArIHRlc3RfY2xpZW5044CBU2NoZW1hdGhlc2lzPC90ZXh0PgoKICA8cG9seWdvbiBwb2ludHM9IjE0MS41LDMwMCA1MTguNSwzMDAgNjIwLDQ0MCA0MCw0NDAiIGZpbGw9IiNBOERBQjUiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPHRleHQgY2xhc3M9ImxheWVyIiB4PSIzMzAiIHk9IjM2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+5Zau5YWD5ris6KmmPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJzdWIiIHg9IjMzMCIgeT0iMzg4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7lpKfph4/jg7vpqZforYnllq7kuIDlh73lvI/oiIfpoZ7liKXnmoTpgo/ovK88L3RleHQ+CiAgPHRleHQgY2xhc3M9InRvb2wiIHg9IjMzMCIgeT0iNDE0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5weXRlc3TjgIF1bml0dGVzdDwvdGV4dD4KCiAgPGxpbmUgeDE9IjY4MCIgeTE9IjYwIiB4Mj0iNjgwIiB5Mj0iNDIwIiBzdHJva2U9IiM1ZjYzNjgiIHN0cm9rZS13aWR0aD0iMyIgbWFya2VyLXN0YXJ0PSJ1cmwoI2Fycm93KSIgbWFya2VyLWVuZD0idXJsKCNhcnJvdykiLz4KICA8dGV4dCBjbGFzcz0ibm90ZS1iIiB4PSI3MDUiIHk9IjcyIj7otorlvoDkuIo8L3RleHQ+CiAgPHRleHQgY2xhc3M9Im5vdGUiIHg9IjcwNSIgeT0iOTgiPui2iuaFouOAgei2iuiytOOAgei2iuWuueaYk+iqpOWgsTwvdGV4dD4KICA8dGV4dCBjbGFzcz0ibm90ZSIgeD0iNzA1IiB5PSIxMjQiPui2iuaOpei/keS9v+eUqOiAheecn+WvpueahOS9v+eUqOaDheWigzwvdGV4dD4KCiAgPHRleHQgY2xhc3M9Im5vdGUtYiIgeD0iNzA1IiB5PSIzNzIiPui2iuW+gOS4izwvdGV4dD4KICA8dGV4dCBjbGFzcz0ibm90ZSIgeD0iNzA1IiB5PSIzOTgiPuaVuOmHj+i2iuWkmuOAgei2iuW/q+OAgei2iuS+v+WunOOAgei2iuepqeWumjwvdGV4dD4KICA8dGV4dCBjbGFzcz0ibm90ZSIgeD0iNzA1IiB5PSI0MjQiPui2iuaOpei/keeoi+W8j+WFp+mDqDwvdGV4dD4KCiAgPHRleHQgY2xhc3M9InRvb2wiIHg9IjMzMCIgeT0iNDgwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5NaWtlIENvaG7vvIzjgIpTdWNjZWVkaW5nIHdpdGggQWdpbGXjgIvvvIgyMDA577yJPC90ZXh0Pgo8L3N2Zz4K" alt="測試金字塔"></p>
+<table>
+<thead>
+<tr>
+<th>層級</th>
+<th>驗證什麼</th>
+<th>工具（Python）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>E2E / UI</td>
+<td>使用者完整流程</td>
+<td>Playwright</td>
+</tr>
+<tr>
+<td>整合 / API</td>
+<td>元件之間、HTTP API</td>
+<td>pytest + <code>test_client</code>、Schemathesis</td>
+</tr>
+<tr>
+<td>單元</td>
+<td>單一函式的邏輯</td>
+<td>pytest</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>重點不是固定比例，而是<strong>每一層都要有，並知道它在保護什麼</strong>。</p>
+</blockquote>
+<hr>
+<h2 id="怎麼確保一致api-test-first">怎麼確保一致：API Test First </h2>
+<p>常見的問題：文件、程式、測試各走各的。<br>
+<strong>API Test First 是一套開發規範</strong>：以 API 契約為唯一來源，文件、規格、測試都從契約產生，程式必須通過測試。</p>
+<div class="mermaid">flowchart LR
+    C["API 契約&lt;br/&gt;單一來源"] --&gt; D["文件"]
+    C --&gt; O["OpenAPI"]
+    O --&gt; T["API 測試"]
+    T --&gt;|必須通過| P["程式"]
+</div><p><img src="data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjQwIDQ5MCIgd2lkdGg9IjEyNDAiIGhlaWdodD0iNDkwIiByb2xlPSJpbWciIGFyaWEtbGFiZWxsZWRieT0idGl0bGUgZGVzYyI+CiAgPHRpdGxlIGlkPSJ0aXRsZSI+QVBJIFRlc3QgRmlyc3Qg5Zyo5ris6Kmm6YeR5a2X5aGU5Lit55qE5L2N572uPC90aXRsZT4KICA8ZGVzYyBpZD0iZGVzYyI+5ris6Kmm6YeR5a2X5aGU55qE5Lit6ZaT5bGk5piv5pW05ZCI6IiHIEFQSSDmuKzoqabvvIzkuZ/lsLHmmK8gQVBJIFRlc3QgRmlyc3TvvIzlroPnmoTmuKzoqablvp4gQVBJIOWlkee0hOaOqOWwju+8jOiIh+WvpuS9nOeNqOeri+OAguW6leWxpOeahOWWruWFg+a4rOippueUsSBUREQg6amF5YuV77yM5a6D55qE5ris6Kmm5b6e5a+m5L2c56iL5byP56K85o6o5bCO77yM5Y+v6IO96YG35bCx5a+m5L2c44CCPC9kZXNjPgogIDxzdHlsZT4KICAgIHRleHQgeyBmb250LWZhbWlseTogIlBpbmdGYW5nIFRDIiwgIk5vdG8gU2FucyBUQyIsICJNaWNyb3NvZnQgSmhlbmdIZWkiLCBzYW5zLXNlcmlmOyBmaWxsOiAjMjAyMTI0OyB9CiAgICAubGF5ZXIgeyBmb250LXNpemU6IDIxcHg7IGZvbnQtd2VpZ2h0OiA3MDA7IH0KICAgIC5sYXllci13IHsgZm9udC1zaXplOiAyMXB4OyBmb250LXdlaWdodDogNzAwOyBmaWxsOiAjZmZmZmZmOyB9CiAgICAuc3ViLXcgeyBmb250LXNpemU6IDE2cHg7IGZpbGw6ICNmZmZmZmY7IH0KICAgIC5zdWIgeyBmb250LXNpemU6IDE2cHg7IH0KICAgIC5ib3ggeyBmb250LXNpemU6IDE4cHg7IGZvbnQtd2VpZ2h0OiA3MDA7IH0KICAgIC5ib3gtc3ViIHsgZm9udC1zaXplOiAxNHB4OyBmaWxsOiAjM2M0MDQzOyB9CiAgICAuZWRnZSB7IGZvbnQtc2l6ZTogMTVweDsgZmlsbDogIzVmNjM2ODsgfQogICAgLm5vdGUtYiB7IGZvbnQtc2l6ZTogMTdweDsgZm9udC13ZWlnaHQ6IDcwMDsgfQogICAgLm5vdGUgeyBmb250LXNpemU6IDE1cHg7IGZpbGw6ICMzYzQwNDM7IH0KICA8L3N0eWxlPgogIDxkZWZzPgogICAgPG1hcmtlciBpZD0iYSIgdmlld0JveD0iMCAwIDEwIDEwIiByZWZYPSI5IiByZWZZPSI1IiBtYXJrZXJXaWR0aD0iOCIgbWFya2VySGVpZ2h0PSI4IiBvcmllbnQ9ImF1dG8iPgogICAgICA8cGF0aCBkPSJNMCwwIEwxMCw1IEwwLDEwIHoiIGZpbGw9IiM1ZjYzNjgiLz4KICAgIDwvbWFya2VyPgogIDwvZGVmcz4KCiAgPHBvbHlnb24gcG9pbnRzPSI2MjAsNDAgNzA3LDE2MCA1MzMsMTYwIiBmaWxsPSIjREFEQ0UwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMyIvPgogIDx0ZXh0IGNsYXNzPSJsYXllciIgeD0iNjIwIiB5PSIxMzgiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkUyRSAvIFVJPC90ZXh0PgoKICA8cG9seWdvbiBwb2ludHM9IjUzMywxNjAgNzA3LDE2MCA4MDguNSwzMDAgNDMxLjUsMzAwIiBmaWxsPSIjMUE3M0U4IiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMyIvPgogIDx0ZXh0IGNsYXNzPSJsYXllci13IiB4PSI2MjAiIHk9IjIyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+5pW05ZCIIC8gQVBJIOa4rOippjwvdGV4dD4KICA8dGV4dCBjbGFzcz0ic3ViLXciIHg9IjYyMCIgeT0iMjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7ihpAgQVBJIFRlc3QgRmlyc3Q8L3RleHQ+CgogIDxwb2x5Z29uIHBvaW50cz0iNDMxLjUsMzAwIDgwOC41LDMwMCA5MTAsNDQwIDMzMCw0NDAiIGZpbGw9IiNBOERBQjUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPHRleHQgY2xhc3M9ImxheWVyIiB4PSI2MjAiIHk9IjM2MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+5Zau5YWD5ris6KmmPC90ZXh0PgogIDx0ZXh0IGNsYXNzPSJzdWIiIHg9IjYyMCIgeT0iMzkyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7ihpAgVEREPC90ZXh0PgoKICA8cmVjdCB4PSI0MCIgeT0iMTk4IiB3aWR0aD0iMjMwIiBoZWlnaHQ9IjY0IiByeD0iMTAiIGZpbGw9IiNFOEYwRkUiIHN0cm9rZT0iIzFBNzNFOCIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHRleHQgY2xhc3M9ImJveCIgeD0iMTU1IiB5PSIyMjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkFQSSDlpZHntIQ8L3RleHQ+CiAgPHRleHQgY2xhc3M9ImJveC1zdWIiIHg9IjE1NSIgeT0iMjQ5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7vvIhTREQg55qE55Si54mp77yJPC90ZXh0PgogIDxsaW5lIHgxPSIyNzIiIHkxPSIyMzAiIHgyPSI0NzYiIHkyPSIyMzAiIHN0cm9rZT0iIzVmNjM2OCIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1kYXNoYXJyYXk9IjggNiIgbWFya2VyLWVuZD0idXJsKCNhKSIvPgogIDx0ZXh0IGNsYXNzPSJlZGdlIiB4PSIzNzQiIHk9IjIyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+5o6o5bCOPC90ZXh0PgoKICA8cmVjdCB4PSI0MCIgeT0iMzM4IiB3aWR0aD0iMjMwIiBoZWlnaHQ9IjY0IiByeD0iMTAiIGZpbGw9IiNGMUYzRjQiIHN0cm9rZT0iIzVmNjM2OCIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHRleHQgY2xhc3M9ImJveCIgeD0iMTU1IiB5PSIzNjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuWvpuS9nOeoi+W8j+eivDwvdGV4dD4KICA8dGV4dCBjbGFzcz0iYm94LXN1YiIgeD0iMTU1IiB5PSIzODkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPu+8iOWQjOS4gOWAi+S6uuaIliBBSSDlr6vnmoTvvIk8L3RleHQ+CiAgPGxpbmUgeDE9IjI3MiIgeTE9IjM3MCIgeDI9IjM3NCIgeTI9IjM3MCIgc3Ryb2tlPSIjNWY2MzY4IiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWRhc2hhcnJheT0iOCA2IiBtYXJrZXItZW5kPSJ1cmwoI2EpIi8+CiAgPHRleHQgY2xhc3M9ImVkZ2UiIHg9IjMyMyIgeT0iMzYwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7mjqjlsI48L3RleHQ+CgogIDx0ZXh0IGNsYXNzPSJub3RlLWIiIHg9Ijg1MCIgeT0iMjIyIj7oiIflr6bkvZznjajnq4s8L3RleHQ+CiAgPHRleHQgY2xhc3M9Im5vdGUiIHg9Ijg1MCIgeT0iMjQ2Ij7lvp7lpZHntITlh7rpoYzvvIzkuI3mnIPpgbflsLHlr6bkvZw8L3RleHQ+CgogIDx0ZXh0IGNsYXNzPSJub3RlLWIiIHg9IjkzNSIgeT0iMzYyIj7lj6/og73pgbflsLHlr6bkvZw8L3RleHQ+CiAgPHRleHQgY2xhc3M9Im5vdGUiIHg9IjkzNSIgeT0iMzg2Ij7oh6rlt7Hlh7rpoYzoh6rlt7HogIM8L3RleHQ+Cjwvc3ZnPgo=" alt="API Test First"></p>
+<hr>
+<h2 id="為什麼要-api-test-first">為什麼要 API Test First </h2>
+<ol>
+<li><strong>單一來源</strong>：改契約，文件、規格、測試一起更新</li>
+<li><strong>契約可以被檢查</strong>：程式和契約不一致，測試直接失敗</li>
+<li><strong>最穩定的護欄</strong>：內部怎麼重構，契約不變測試就不用改</li>
+<li><strong>人看得懂</strong>：request / response 是人掌握功能的抓手</li>
+<li><strong>成本甜蜜點</strong>：比 E2E 快又穩，比單元測試更接近真實行為</li>
+<li><strong>前後端可平行開發</strong></li>
+</ol>
+<div class="mermaid">flowchart LR
+    A["API 契約"] --&gt; B["OpenAPI"] --&gt; C["驗證"] --&gt; D["API 測試&lt;br/&gt;（先失敗）"] --&gt; E["實作"] --&gt; F["測試通過"]
+</div><hr>
+<h2 id="測試怎麼生成harness-engineering">測試怎麼生成：Harness Engineering </h2>
+<div class="mermaid">flowchart LR
+    P["Prompt&lt;br/&gt;任務 + 完成條件"] --&gt; A["AI 執行一輪"]
+    A --&gt; V["Verifier&lt;br/&gt;pytest（程式）"]
+    V --&gt; W["scratchpad.md"]
+    W --&gt; C{"完成？"}
+    C --&gt;|LOOP_COMPLETE| OK([結束])
+    C --&gt;|BLOCKED| H([交給人])
+    C --&gt;|否| P
+</div><ul>
+<li>測試內容交給 AI 生成，harness 讓它反覆執行、驗證、修正到通過（flask-he）</li>
+<li>Verifier <strong>是程式不是 AI</strong>，AI 不能改門檻</li>
+<li><code>scratchpad.md</code> 跨輪保存進度</li>
+<li><strong>Runner 負責組好一次執行，Harness 負責重複到通過</strong></li>
+</ul>
+<hr>
+<p><strong>Step 3 / 7 · Break Down the SDLC</strong></p>
+<h1 id="3-拆解">3. 拆解 </h1>
+<h2 id="每個階段要交給-ai-哪些材料">每個階段要交給 AI 哪些材料 </h2>
+<hr>
+<h2 id="五個元件">五個元件 </h2>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>┌──────────────────────────────────────────┐
+│ agent    誰在做、有什麼權限    ← 指令旗標   │
+│ model    用多聰明的腦         ← 指令旗標   │
+├──────────────────────────────────────────┤
+│ steering 遵守什麼規範         ← prompt 最前 │
+│ prompt   做什麼任務          ← prompt 中間 │
+│ context  看到什麼現況資料     ← prompt 最後 │
+└──────────────────────────────────────────┘
+</code></pre><ul>
+<li>目前實際用到：model、steering、prompt、context</li>
+<li>簡單任務（commit、PR）用 haiku，需求分析與實作用 auto</li>
+<li>steering 由 runner 直接注入，<strong>保證 AI 一定看得到</strong>；寫在 prompt 裡要求 AI 去讀，則看 AI 自己</li>
+</ul>
+<hr>
+<h2 id="需求--設計git-issues">需求 / 設計：<code>git-issues</code> </h2>
+<div class="mermaid">flowchart LR
+    R["需求描述&lt;br/&gt;（使用者）"] --&gt; T1["任務 1&lt;br/&gt;生成 PRD"]
+    S["PRD / EARS / Issue 範本&lt;br/&gt;agent.md"] --&gt; T1
+    T1 --&gt; T2["任務 2&lt;br/&gt;拆成 Issues"]
+    C["現有 labels / milestones"] --&gt; T2
+    T2 --&gt; H{"全體人員審查&lt;br/&gt;dry-run 後上傳"}
+    H --&gt; GH[("GitHub")]
+</div><ul>
+<li>使用者只寫口語需求，其餘範本由系統事先提供</li>
+<li><strong>AI 只寫到 <code>temp/</code>，不直接建立 GitHub Issue</strong></li>
+</ul>
+<hr>
+<h2 id="實作git-issue-resolve">實作：<code>git-issue-resolve</code> </h2>
+<div class="mermaid">flowchart LR
+    I["GitHub Issue&lt;br/&gt;EARS 驗收條件"] --&gt; BR["切分支&lt;br/&gt;feature/類型/issue-N"]
+    BR --&gt; PM["轉成 PROMPT.md&lt;br/&gt;Completion Criteria"]
+    PM --&gt; L["Harness 迭代&lt;br/&gt;實作 ⇄ 測試"]
+    L --&gt;|LOOP_COMPLETE| C["commit / push"]
+</div><table>
+<thead>
+<tr>
+<th>材料</th>
+<th>怎麼給</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Issue 內容、分支狀態、前次進度</td>
+<td>context（自動收集）</td>
+</tr>
+<tr>
+<td>API-First 規範</td>
+<td>steering</td>
+</tr>
+<tr>
+<td>專案背景 <code>agent.md</code></td>
+<td>prompt 要求參考</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>單元測試在這一步完成；<strong>做到哪裡算完成由測試判斷，不靠人盯</strong>。</p>
+</blockquote>
+<hr>
+<h2 id="測試api-測試由人主導">測試：API 測試由人主導 </h2>
+<ul>
+<li>單元測試由 AI 寫實作時一併產生，<strong>可能遷就實作</strong></li>
+<li>API 測試從契約推導，是<strong>人確認「這個功能真的是我要的」的地方</strong></li>
+<li><strong>最後的整合測試一定由資淺工程師親自執行</strong>
+<ul>
+<li>實際操作的人親手驗過，才真正掌握功能</li>
+<li>也是最好的上手方式：從 request / response 理解功能全貌</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>AI 可以幫忙產生 API 測試（flask-he），但判斷結果對不對的是人。</p>
+</blockquote>
+<hr>
+<h2 id="交付commit-message--pr-message">交付：<code>commit-message</code> / <code>pr-message</code> </h2>
+<table>
+<thead>
+<tr>
+<th>Hook</th>
+<th>主要工作</th>
+<th>順手處理的事</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>commit-message</code></td>
+<td>產生 Conventional Commits</td>
+<td><strong>自動更新變更目錄的 README</strong></td>
+</tr>
+<tr>
+<td><code>pr-message</code></td>
+<td>依範本建立 PR</td>
+<td>自動寫 <code>Closes #N</code>、分類變更、套用 labels</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>文件更新綁進 commit 流程：不會再有「程式改了、README 沒改」</li>
+<li>PR 建立後由 CI/CD 跑測試，<strong>資深工程師最後驗收</strong></li>
+<li>資深工程師的時間從逐行 review，集中到最後一道把關</li>
+</ul>
+<hr>
+<h2 id="總整理同一支-runner不同-hook">總整理：同一支 runner，不同 hook </h2>
+<table>
+<thead>
+<tr>
+<th>階段</th>
+<th>Hook</th>
+<th>方法</th>
+<th>model</th>
+<th>誰確認</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>需求 / 設計</td>
+<td><code>git-issues</code></td>
+<td>SDD</td>
+<td>auto</td>
+<td>全體人員</td>
+</tr>
+<tr>
+<td>實作</td>
+<td><code>git-issue-resolve</code></td>
+<td>TDD + Harness</td>
+<td>auto</td>
+<td>不需要人（測試判斷）</td>
+</tr>
+<tr>
+<td>測試</td>
+<td>flask-he</td>
+<td>API Test First</td>
+<td>依設定</td>
+<td>資淺工程師</td>
+</tr>
+<tr>
+<td>交付</td>
+<td><code>commit-message</code></td>
+<td>Conventional Commits</td>
+<td>haiku</td>
+<td>有權限直接提交，否則按 y</td>
+</tr>
+<tr>
+<td>交付</td>
+<td><code>pr-message</code></td>
+<td>PR 範本</td>
+<td>haiku</td>
+<td>資深工程師</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Runner 是穩定的引擎，Hook 是可替換的任務。</strong><br>
+每個 hook 只有三個檔：<code>&lt;name&gt;.json</code>、<code>&lt;name&gt;.prompt.md</code>、<code>&lt;name&gt;.context.sh</code></p>
+</blockquote>
+<hr>
+<p><strong>Step 4 / 7 · Simplify the Complex</strong></p>
+<h1 id="4-runner-的設計">4. Runner 的設計 </h1>
+<h2 id="以簡馭繁一支-script-貫通所有階段">以簡馭繁：一支 script 貫通所有階段 </h2>
+<hr>
+<h2 id="從一行指令出發">從一行指令出發 </h2>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code>kiro-cli chat --no-interactive --trust-all-tools <span class="token string">"<span class="token variable"><span class="token variable">$(</span><span class="token function">cat</span> tasks/hello.prompt.md<span class="token variable">)</span></span>"</span>
+</code></pre><table>
+<thead>
+<tr>
+<th>痛點</th>
+<th>設計</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>任務寫死、不知道有哪些任務</td>
+<td>任務註冊表</td>
+</tr>
+<tr>
+<td>每個任務要不同 model</td>
+<td>Metadata 與設定優先序</td>
+</tr>
+<tr>
+<td>AI 看不到現況</td>
+<td>Context Script 介面</td>
+</tr>
+<tr>
+<td>規範每次重貼、不知道 AI 收到什麼</td>
+<td>Steering、組裝順序、dry-run</td>
+</tr>
+<tr>
+<td>換目錄就壞、掛進別的專案出問題</td>
+<td>可攜性與安全</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>原則：runner 的輸出是「一個指令＋一份 prompt」，<strong>可以不呼叫 AI 就被測試</strong>。</p>
+</blockquote>
+<hr>
+<h2 id="註冊-設定-介面">註冊、設定、介面 </h2>
+<p><strong>任務註冊表（約定優於設定）</strong></p>
+<ul>
+<li>檔案存在 = 一個 hook，新增任務不改 runner</li>
+<li>hook 名稱後的參數原樣轉交（<code>HOOK_ARGS</code>），由 hook 自己解讀</li>
+</ul>
+<p><strong>設定優先序：CLI 旗標 &gt; JSON &gt; 工具預設</strong></p>
+<ul>
+<li>metadata 放 JSON，長 prompt 放 <code>.md</code></li>
+</ul>
+<p><strong>Context Script 介面</strong></p>
+<ul>
+<li>runner → script：環境變數；script → runner：stdout</li>
+<li>失敗不中斷，附上 <code>(context collection failed)</code></li>
+<li><code>=== SECTION ===</code> 分段，prompt 用名稱引用：<strong>這也是介面</strong></li>
+</ul>
+<hr>
+<h2 id="組裝順序與-dry-run">組裝順序與 dry-run </h2>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>┌─ ## 規範（Steering）    ← 最穩定、最高層的約束
+├─ &lt;prompt.md 內容&gt;        ← 任務
+├─ ## 上下文資訊           ← 最易變、量最大的資料
+└─ ## 工具路徑資訊（Nested 時）
+</code></pre><ul>
+<li><strong>指令在前、資料在後</strong>：AI 先知道規則，比較不會被大量資料帶偏</li>
+<li>資料加標題放最後：降低 prompt injection 風險（無法完全消除）</li>
+<li><strong><code>--dry-run</code></strong>：不呼叫 AI、不動 git，是 prompt 的除錯器與 review 工具</li>
+</ul>
+<hr>
+<h2 id="可攜性與安全">可攜性與安全 </h2>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>my-flask-project/          ← REPO_ROOT（規範、現況、AI 的工作目錄）
+└── ai-dev-tools/          ← TOOLS_ROOT（runner、tasks、範本）
+</code></pre><table>
+<thead>
+<tr>
+<th>決策</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>整支包進函式，用 <code>return</code></td>
+<td>被 <code>source</code> 也不會關掉終端機</td>
+</tr>
+<tr>
+<td>Nested mode 注入工具路徑</td>
+<td>AI 知道工具內的檔案在哪</td>
+</tr>
+<tr>
+<td>steering 路徑相對 <code>REPO_ROOT</code></td>
+<td>規範屬於專案，不屬於工具</td>
+</tr>
+<tr>
+<td>回傳 AI 工具的 exit code</td>
+<td>CI 能判斷失敗</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><strong>Step 5 / 7 · Implement a Full Cycle</strong></p>
+<h1 id="5-實戰">5. 實戰 </h1>
+<h2 id="會議記錄彙整系統">會議記錄彙整系統 </h2>
+<p>上傳逐字稿 → Bedrock（Claude）彙整摘要與與會者 → SES 寄信通知</p>
+<p>所有指令都在 <strong>repo 根目錄</strong>執行</p>
+<hr>
+<h2 id="全貌0--10-共-11-個步驟">全貌：0 → 10 共 11 個步驟 </h2>
+<div class="mermaid">flowchart LR
+    S0["0 展示分支"] --&gt; S1["1 需求"]
+    S1 --&gt;|git-issues| S2["2 規格書&lt;br/&gt;Issue 草稿"]
+    S2 --&gt;|upload| S3["3 GitHub&lt;br/&gt;Issues"]
+    S3 --&gt;|git-issue-resolve| S4["4 AI 實作"]
+    S4 --&gt;|pr-message| S5["5 PR"]
+    S5 --&gt;|人工| S6["6 合併"]
+    S6 --&gt; S7["7 API Test First"]
+    S7 --&gt; S8["8 生成測試"]
+    S8 --&gt; S9["9 整合測試"]
+    S9 --&gt; S10["10 清除"]
+</div><table>
+<thead>
+<tr>
+<th style="text-align:center">步驟</th>
+<th>指令</th>
+<th>人要確認</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td><code>git checkout -b demo/run-1 demo-baseline</code></td>
+<td>起點是乾淨的基準</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td><code>hook git-issues</code></td>
+<td>待確認事項、Issue 拆分</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td><code>upload-issues.sh --dry-run</code></td>
+<td>上傳清單</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td><code>hook git-issue-resolve &lt;N&gt;</code></td>
+<td>diff、測試結果</td>
+</tr>
+<tr>
+<td style="text-align:center">5–6</td>
+<td><code>hook pr-message demo/run-1</code></td>
+<td><strong>base 是 <code>demo/run-1</code></strong>、按下 Merge</td>
+</tr>
+<tr>
+<td style="text-align:center">8–9</td>
+<td><code>run.sh</code>、<code>flask_function_wrapper.py</code></td>
+<td><strong>真實呼叫是否正常</strong></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="開場前確認環境">開場前：確認環境 </h2>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token builtin class-name">source</span> .venv/bin/activate                                  <span class="token comment"># Python 虛擬環境</span>
+<span class="token builtin class-name">alias</span> <span class="token assign-left variable">hook</span><span class="token operator">=</span><span class="token string">'bash ai-dev-tools/scripts/hooks/kiro-hook-run.sh'</span>
+
+gh auth status                                             <span class="token comment"># GitHub 已登入</span>
+kiro-cli <span class="token function">whoami</span>                                            <span class="token comment"># Kiro 已登入</span>
+hook <span class="token parameter variable">--list</span>                                                <span class="token comment"># 列出 git-issues、git-issue-resolve…</span>
+hook commit-message --dry-run <span class="token operator">|</span> <span class="token function">head</span> <span class="token parameter variable">-20</span>                   <span class="token comment"># 只組 prompt，不呼叫 AI、不動 git</span>
+<span class="token function">ls</span> <span class="token parameter variable">-l</span> .kiro/steering/                                      <span class="token comment"># api-first-workflow.md 存在</span>
+<span class="token function">git</span> check-ignore <span class="token parameter variable">-v</span> ai-dev-tools                           <span class="token comment"># 工具集被 .gitignore 排除</span>
+</code></pre><ul>
+<li>安裝步驟見 README「安裝設定」1–8</li>
+<li><code>--dry-run</code> 先確認 Runner 抓到的現況與規範是否正確</li>
+</ul>
+<hr>
+<h2 id="步驟-0切換展示分支">步驟 0：切換展示分支 </h2>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token comment"># 從遠端（origin）把所有 tag 抓到本機</span>
+<span class="token function">git</span> fetch <span class="token parameter variable">--tags</span>
+<span class="token comment"># 用 demo-baseline 這個 tag 當起點</span>
+<span class="token function">git</span> checkout <span class="token parameter variable">-b</span> demo/run-1 demo-baseline
+<span class="token function">git</span> push <span class="token parameter variable">-u</span> origin demo/run-1
+</code></pre><ul>
+<li><code>demo-baseline</code> 是事先打好的基準 tag（README 第 9 步 (1)）</li>
+<li>每次展示從它開一條新分支，<code>develop</code> 永遠保持乾淨</li>
+<li>之後所有 PR 都合併進 <code>demo/run-1</code>，<strong>不要合進 <code>develop</code></strong></li>
+<li><code>git-issue-resolve</code> 從<strong>目前分支</strong>切出 feature 分支：實作前一定要在 <code>demo/run-1</code></li>
+</ul>
+<hr>
+<h2 id="步驟-1撰寫需求-tempuser_repsrequestmd">步驟 1：撰寫需求 <code>temp/user_reps/request.md</code> </h2>
+<p>用口語寫就好，不需要寫成規格：</p>
+<ul>
+<li>上傳會議記錄，用 Claude 彙整（附上完整的彙整提示詞）</li>
+<li><code>POST /api/meeting-minute</code>：傳入檔案，回傳會議摘要與與會者（姓名、Email）</li>
+<li><code>POST /api/notify</code>：傳入摘要與與會者，用 AWS SES（<code>ap-southeast-1</code>）寄信</li>
+<li>「本機有設定好的 AWS profile，不用考慮權限問題」</li>
+</ul>
+<p><strong>要注意</strong></p>
+<ul>
+<li><code>git-issues</code> 會讀 <code>temp/user_reps/</code> 底下<strong>所有</strong> <code>.md</code>：只留這一輪的需求檔</li>
+<li><code>temp/</code> 不進版控，要重複使用的需求請另外備份</li>
+<li>指定模型時，要確認該模型在使用的區域可用（步驟 9 會看到）</li>
+</ul>
+<hr>
+<h2 id="步驟-2生成規格書並切割-issue">步驟 2：生成規格書並切割 Issue </h2>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code>hook git-issues --dry-run <span class="token operator">|</span> <span class="token function">less</span>     <span class="token comment"># 先看 AI 會收到什麼（不呼叫 AI、不動 git）</span>
+hook git-issues                      <span class="token comment"># 實際執行</span>
+</code></pre><table>
+<thead>
+<tr>
+<th>任務</th>
+<th>範本</th>
+<th>產出</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. 需求 → 規格書（10 章節）</td>
+<td><code>user_requirement.md</code></td>
+<td><code>temp/user_reps_report/system_requirement_&lt;日期&gt;.md</code></td>
+</tr>
+<tr>
+<td>2. 規格書 → Issue 草稿</td>
+<td><code>feature_request_ears.md</code></td>
+<td><code>temp/github-issues/NN-&lt;名稱&gt;.md</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>每個 Issue 有 front matter（title、labels、milestone）與 EARS 驗收條件</li>
+<li>Milestone 依規格書第 8 節；label 只用現有的，缺的寫在「建議新增 Label」</li>
+</ul>
+<p><strong>人要確認</strong>：規格書第 9 節「待確認事項」、Issue 拆分與依賴順序、label 與 milestone</p>
+<hr>
+<h2 id="步驟-3上傳-issue">步驟 3：上傳 Issue </h2>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">bash</span> ai-dev-tools/gh-issue/scripts/upload-issues.sh --dry-run   <span class="token comment"># 先看會建立什麼</span>
+<span class="token function">bash</span> ai-dev-tools/gh-issue/scripts/upload-issues.sh             <span class="token comment"># 確認後正式上傳</span>
+gh issue list
+</code></pre><ol>
+<li>掃描「建議新增 Label」，加進快照</li>
+<li>建立 GitHub 上缺少的 label、milestone</li>
+<li>依檔名順序建立 Issue（<code>01-…</code> 成為 #1）</li>
+</ol>
+<ul>
+<li><strong>Issue 與 PR 共用同一組編號</strong>：Issue 是 #1～#5，PR 就從 #6 開始</li>
+<li>不需要事先 <code>gh label create</code></li>
+</ul>
+<hr>
+<h2 id="步驟-4依-issue-實作">步驟 4：依 Issue 實作 </h2>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">git</span> branch --show-current            <span class="token comment"># 必須在 demo/run-1</span>
+hook git-issue-resolve <span class="token number">1</span> --dry-run   <span class="token comment"># 確認抓到 Issue 內容、沒有 steering 警告</span>
+hook git-issue-resolve <span class="token number">1</span>             <span class="token comment"># 可一次給多個編號：hook git-issue-resolve 1 2</span>
+</code></pre><p>AI 的步驟：</p>
+<ol>
+<li>切分支 <code>feature/{type}/issue-N</code>（type 依 label：backend / frontend / infra / docs）</li>
+<li>建立 <code>PROMPT.md</code>（含 Completion Criteria）與 <code>scratchpad.md</code></li>
+<li>啟動 harness 迭代，最多 10 輪，出現 <code>LOOP_COMPLETE</code> 結束</li>
+<li>commit（含 <code>Closes #N</code>）→ push</li>
+</ol>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">cat</span> ai-dev-tools/harness-engineering/issues/issue-1/scratchpad.md   <span class="token comment"># AI 每一輪做了什麼</span>
+<span class="token function">git</span> <span class="token function">diff</span> demo/run-1 <span class="token parameter variable">--stat</span>
+</code></pre><hr>
+<h2 id="步驟-5建立-pr">步驟 5：建立 PR </h2>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">git</span> branch --show-current            <span class="token comment"># 必須在 feature/infra/issue-1</span>
+hook pr-message demo/run-1           <span class="token comment"># 參數就是 PR 的 base 分支</span>
+</code></pre><ul>
+<li>依範本產生描述，從分支名稱自動寫上 <code>Closes #1</code></li>
+<li>依變更路徑判斷並套用 label（沒有的會自動建立）</li>
+<li><code>gh pr create --base demo/run-1 …</code>，完成後<strong>切回 base 分支</strong></li>
+<li><strong>只建立 PR，不會合併</strong></li>
+</ul>
+<blockquote>
+<p>⚠ AI 完成時提示的是 <code>pr-message develop</code>，<strong>展示時不要照抄</strong>：<br>
+照做會把 PR 開到 <code>develop</code>，污染開發分支。</p>
+</blockquote>
+<hr>
+<h2 id="步驟-6審核並合併">步驟 6：審核並合併 </h2>
+<p>在 GitHub 的 PR 頁面：看 <strong>Files changed</strong> → 確認 <strong>base 是 <code>demo/run-1</code></strong> → Approve → <strong>Merge</strong></p>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code>gh issue close <span class="token number">1</span>                     <span class="token comment"># 合併進非預設分支，Issue 不會自動關閉</span>
+<span class="token function">git</span> checkout demo/run-1 <span class="token operator">&amp;&amp;</span> <span class="token function">git</span> pull  <span class="token comment"># 本機同步，否則下一個 Issue 缺內容</span>
+</code></pre><table>
+<thead>
+<tr>
+<th>動作</th>
+<th>結果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Approve</td>
+<td>只是審核通過，PR 仍是 open</td>
+</tr>
+<tr>
+<td>Merge</td>
+<td>把 feature 分支合併進 base</td>
+</tr>
+</tbody>
+</table>
+<p><strong>開錯 base 而且已合併</strong>：在本機 <code>develop</code> 仍是基準時，<code>git push --force-with-lease origin develop</code> 還原遠端，再 <code>gh issue reopen &lt;N&gt;</code>（會改寫遠端歷史，先確認沒人在用）</p>
+<hr>
+<h2 id="步驟-7api-test-first兩類-issue-依序處理">步驟 7：API Test First，兩類 Issue 依序處理 </h2>
+<table>
+<thead>
+<tr>
+<th>類型</th>
+<th>常見標籤</th>
+<th>本次</th>
+<th>實作後要做什麼</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7.1 API spec 文件</td>
+<td><code>documentation</code>、<code>backend</code></td>
+<td>#2 端點文件</td>
+<td>跑 <strong>API-First 工具鏈</strong></td>
+</tr>
+<tr>
+<td>7.2 實作 API spec 的程式碼</td>
+<td><code>backend</code></td>
+<td>#3 <code>/api/meeting-minute</code></td>
+<td>做<strong>步驟 8、9</strong></td>
+</tr>
+</tbody>
+</table>
+<div class="mermaid">flowchart LR
+    D["7.1 端點文件"] --&gt;|工具鏈| O["openapi.yaml&lt;br/&gt;契約"]
+    O --&gt; C["7.2 實作"]
+    C --&gt;|步驟 8| T["生成測試"]
+    T --&gt;|步驟 9| R["整合測試"]
+</div><pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">git</span> checkout demo/run-1 <span class="token operator">&amp;&amp;</span> <span class="token function">git</span> pull  <span class="token comment"># 確認已包含前一個 Issue 的合併結果</span>
+hook git-issue-resolve <span class="token operator">&lt;</span>N<span class="token operator">&gt;</span>           <span class="token comment"># 兩類都用同一個指令</span>
+</code></pre><hr>
+<h2 id="71-api-spec-文件跑-api-first-工具鏈">7.1 API spec 文件：跑 API-First 工具鏈 </h2>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token assign-left variable">T</span><span class="token operator">=</span>ai-dev-tools/scripts/apispec
+python <span class="token variable">$T</span>/lint-endpoints.py      <span class="token comment"># 0. 端點文件是否符合 API_REFERENCE_TEMPLATE.md</span>
+python <span class="token variable">$T</span>/build-reference.py     <span class="token comment"># 1. endpoint/*.md + metadata.yaml → API_REFERENCE.md</span>
+python <span class="token variable">$T</span>/md-to-openapi.py       <span class="token comment"># 2. → openapi.yaml</span>
+python <span class="token variable">$T</span>/validate-openapi.py    <span class="token comment"># 3. 驗證 openapi.yaml</span>
+</code></pre><ul>
+<li><code>openapi.yaml</code> 是 7.2 實作要遵守的契約，也是 flask-he 生成整合測試的依據</li>
+<li><code>API_REFERENCE.md</code>、<code>openapi.yaml</code> 是生成物，<strong>不手改</strong>；要改就改 <code>endpoint/*.md</code> 再重跑</li>
+<li><strong>人要確認</strong>：端點、request / response 欄位、錯誤碼符合規格書</li>
+</ul>
+<hr>
+<h2 id="72-實作-api-spec-的程式碼">7.2 實作 API spec 的程式碼 </h2>
+<table>
+<thead>
+<tr>
+<th>層</th>
+<th>本次產出（<code>feature/backend/issue-3</code>）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>路由</td>
+<td><code>routes/meeting.py</code>：只做 HTTP 解析與錯誤對應</td>
+</tr>
+<tr>
+<td>業務邏輯</td>
+<td><code>services/meeting_service.py</code>：檔名、副檔名、大小、編碼驗證</td>
+</tr>
+<tr>
+<td>外部服務</td>
+<td><code>services/llm_service.py</code>：<strong>唯一</strong> import boto3 的模組</td>
+</tr>
+<tr>
+<td>契約</td>
+<td><code>docs/api/endpoint/meeting.md</code></td>
+</tr>
+<tr>
+<td>測試</td>
+<td><code>backend/tests/</code> 下的 pytest，LLM 一律 stub</td>
+</tr>
+</tbody>
+</table>
+<p>AI 說完成之後，還要做兩件事：</p>
+<ol>
+<li><strong>步驟 8</strong>：依 <code>openapi.yaml</code> 生成單元與整合測試，契約和實作不一致就會失敗</li>
+<li><strong>步驟 9</strong>：<code>--stub</code> 確認程式邏輯，再真實呼叫確認環境與外部服務</li>
+</ol>
+<hr>
+<h2 id="步驟-8-1生成單元測試flask-he">步驟 8-1：生成單元測試（flask-he） </h2>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">bash</span> ai-dev-tools/harness-engineering/flask-he/run.sh <span class="token parameter variable">--list</span> <span class="token parameter variable">--kind</span> unit                 <span class="token comment"># 對象與狀態</span>
+<span class="token function">bash</span> ai-dev-tools/harness-engineering/flask-he/run.sh services.llm_service <span class="token parameter variable">--kind</span> unit   <span class="token comment"># 單一模組</span>
+<span class="token function">bash</span> ai-dev-tools/harness-engineering/flask-he/run.sh <span class="token parameter variable">--all</span> <span class="token parameter variable">--kind</span> unit                  <span class="token comment"># 全部（跳過已完成）</span>
+python ai-dev-tools/scripts/flask/validate_tests.py <span class="token parameter variable">--all</span> <span class="token parameter variable">--kind</span> unit                    <span class="token comment"># 品質檢查</span>
+python ai-dev-tools/scripts/flask/generate_test_report.py <span class="token parameter variable">--kind</span> unit --with-report      <span class="token comment"># 執行並出報告</span>
+</code></pre><ul>
+<li>對象來自 <code>flask-he-config.yaml</code> 的 <code>unit.source_include</code>，一個 <code>.py</code> 一個對象</li>
+<li>狀態：✅ 完成、🔄 進行中、⛔ 停止、⬜ 未開始（⬜ 不代表沒有測試）</li>
+<li>外部服務（<code>external_stubs.patch</code>）由 conftest 自動換成假的，不會呼叫真實 AWS</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>產物</th>
+<th>位置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>測試檔</td>
+<td><code>backend/tests/unit/&lt;模組路徑&gt;/test_unit_&lt;模組&gt;.py</code></td>
+</tr>
+<tr>
+<td>報告</td>
+<td><code>backend/tests/unit-test-case-report.md</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="步驟-8-2生成整合測試flask-he">步驟 8-2：生成整合測試（flask-he） </h2>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">bash</span> ai-dev-tools/harness-engineering/flask-he/run.sh <span class="token parameter variable">--list</span> <span class="token parameter variable">--kind</span> integration
+<span class="token function">bash</span> ai-dev-tools/harness-engineering/flask-he/run.sh meeting-minute <span class="token parameter variable">--kind</span> integration
+python ai-dev-tools/scripts/flask/validate_tests.py meeting-minute <span class="token parameter variable">--kind</span> integration
+python ai-dev-tools/scripts/flask/generate_test_report.py <span class="token parameter variable">--kind</span> integration --with-report
+</code></pre><ul>
+<li>資源 = URL 在 <code>/api</code> 之後的第一段（<code>/api/meeting-minute</code> → <code>meeting-minute</code>）</li>
+<li><code>--list</code> 的 ⚠ 提醒<strong>契約有、實作沒有</strong>的端點：API-First 讓落差被看見</li>
+<li><code>docs/api/endpoint/</code> 只放本專案要實作的端點，範例放 <code>docs/api/examples/</code></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>產物</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>requests/NN_MM_&lt;說明&gt;.json</code></td>
+<td>一個檔一個 HTTP 請求</td>
+</tr>
+<tr>
+<td><code>event_hooks.json</code>／<code>.py</code></td>
+<td>請求檔中 <code>{{名稱}}</code> 的值</td>
+</tr>
+<tr>
+<td><code>stubs.json</code></td>
+<td>可 stub 的函式範本（給人與 AI 參考）</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="步驟-9同一個請求三種模式">步驟 9：同一個請求，三種模式 </h2>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token assign-left variable">W</span><span class="token operator">=</span>ai-dev-tools/scripts/flask/flask_function_wrapper.py
+python <span class="token variable">$W</span> meeting-minute 01_01_summarize_meeting_minute.json                 <span class="token comment"># 真實呼叫</span>
+python <span class="token variable">$W</span> meeting-minute 01_01_summarize_meeting_minute.json <span class="token parameter variable">--otel</span>          <span class="token comment"># 真實呼叫 + 呼叫鏈</span>
+python <span class="token variable">$W</span> meeting-minute 01_01_summarize_meeting_minute.json <span class="token parameter variable">--otel</span> <span class="token parameter variable">--stub</span>   <span class="token comment"># 固定回傳值</span>
+</code></pre><table>
+<thead>
+<tr>
+<th>模式</th>
+<th>外部服務</th>
+<th style="text-align:center">耗時</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>不加參數</td>
+<td><strong>真實呼叫</strong> Bedrock</td>
+<td style="text-align:center">數秒到數十秒</td>
+<td>確認 LLM 真的能用</td>
+</tr>
+<tr>
+<td><code>--otel</code></td>
+<td>真實呼叫＋呼叫鏈</td>
+<td style="text-align:center">相近</td>
+<td>看時間花在哪</td>
+</tr>
+<tr>
+<td><code>--otel --stub</code></td>
+<td><code>_stubs</code> 的固定值</td>
+<td style="text-align:center">毫秒級</td>
+<td>快速迴歸、看流程</td>
+</tr>
+</tbody>
+</table>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>🔭 Trace: POST /api/meeting-minute (8.50ms)
+   └─ routes/meeting.py:meeting_minute
+      └─ services/meeting_service.py:summarize
+         └─ 🔇 stub services.llm_service.generate_meeting_minute
+</code></pre><hr>
+<h2 id="步驟-9真實呼叫的前置條件與完整回應">步驟 9：真實呼叫的前置條件與完整回應 </h2>
+<p><strong>缺一就會回 502</strong></p>
+<ol>
+<li><code>.venv</code> 已安裝 <code>requirements.txt</code>（含 <code>boto3</code>）</li>
+<li><code>.env</code> 的 <code>BEDROCK_MODEL_ID</code> 是該區域<strong>可用</strong>的模型</li>
+<li><code>.env</code> 設定 <code>AWS_PROFILE</code>（flask-he 會清掉 shell 中 export 的 AWS 變數）</li>
+</ol>
+<ul>
+<li>同一個請求檔要在兩種模式都通過，<code>_expected</code> <strong>只比對 <code>status</code></strong>：真實 LLM 每次輸出都不同</li>
+<li>真實逐字稿放 <code>temp/test/data/</code>，不進版控</li>
+</ul>
+<p><strong>看完整摘要</strong>（wrapper 會截斷回應）</p>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token builtin class-name">cd</span> backend <span class="token operator">&amp;&amp;</span> python app.py                                                     <span class="token comment"># 終端機 1</span>
+<span class="token function">curl</span> <span class="token parameter variable">-s</span> <span class="token parameter variable">-F</span> <span class="token string">"file=@temp/test/data/20260918.txt"</span> <span class="token punctuation">\</span>
+  http://localhost:5001/api/meeting-minute <span class="token parameter variable">-o</span> temp/test/out.json                <span class="token comment"># 終端機 2</span>
+python <span class="token parameter variable">-c</span> <span class="token string">"import json; d=json.load(open('temp/test/out.json')); print(d['summary']); print(d['attendees'])"</span>
+</code></pre><hr>
+<h2 id="ai-說完成不等於真的能用">AI 說完成，不等於真的能用 </h2>
+<p>所有測試都綠燈，第一次真實執行卻連續撞到：</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>錯誤</th>
+<th>原因</th>
+<th>測試為什麼沒抓到</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>ModuleNotFoundError</code></td>
+<td><code>.venv</code> 沒裝 boto3</td>
+<td>stub 時不會載入</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>ResourceNotFoundException</code></td>
+<td>需求指定的模型已下架</td>
+<td>模型只在真實呼叫時驗證</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>AccessDeniedException</code></td>
+<td>IAM 禁止跨區推論、<code>AWS_PROFILE</code> 被清掉</td>
+<td>權限只在真實呼叫時檢查</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>ValidationException</code></td>
+<td>新模型不接受 <code>temperature</code>、回應格式不同</td>
+<td>stub 回傳的是自己假設的格式</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>stub 驗證程式邏輯，真實呼叫驗證環境與外部服務。</strong><br>
+兩種都要跑，真實呼叫的結果由人判斷。</p>
+</blockquote>
+<hr>
+<h2 id="重複步驟-4-9處理剩下的-issue">重複步驟 4～9：處理剩下的 Issue </h2>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">git</span> checkout demo/run-1 <span class="token operator">&amp;&amp;</span> <span class="token function">git</span> pull
+hook git-issue-resolve <span class="token operator">&lt;</span>N<span class="token operator">&gt;</span>
+<span class="token comment"># 檢視 scratchpad 與 diff</span>
+<span class="token comment"># API spec 文件（7.1）：跑 API-First 工具鏈</span>
+<span class="token comment"># 實作程式碼（7.2）：接著做步驟 8（生成測試）與步驟 9（整合測試、真實呼叫）</span>
+hook pr-message demo/run-1
+<span class="token comment"># GitHub 上審核 → Merge</span>
+gh issue close <span class="token operator">&lt;</span>N<span class="token operator">&gt;</span>
+</code></pre><hr>
+<h2 id="步驟-10清除分支回到初始狀態">步驟 10：清除分支，回到初始狀態 </h2>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">git</span> checkout develop <span class="token operator">&amp;&amp;</span> <span class="token function">git</span> status <span class="token parameter variable">--short</span>                     <span class="token comment"># 先離開要刪的分支</span>
+<span class="token function">git</span> fetch <span class="token parameter variable">--prune</span>                                              <span class="token comment"># 同步遠端分支清單</span>
+
+<span class="token comment"># 1. 關閉所有 open Issue</span>
+gh issue list <span class="token parameter variable">--state</span> <span class="token function">open</span> <span class="token parameter variable">--json</span> number,title <span class="token parameter variable">--jq</span> <span class="token string">'.[] | "#\(.number) \(.title)"'</span>   <span class="token comment"># 先看清單</span>
+gh issue list <span class="token parameter variable">--state</span> <span class="token function">open</span> <span class="token parameter variable">--json</span> number <span class="token parameter variable">--jq</span> <span class="token string">'.[].number'</span> <span class="token operator">|</span> <span class="token function">xargs</span> -I<span class="token punctuation">{</span><span class="token punctuation">}</span> gh issue close <span class="token punctuation">{</span><span class="token punctuation">}</span>
+
+<span class="token comment"># 2. 刪除遠端的展示分支與 feature 分支</span>
+<span class="token function">git</span> branch <span class="token parameter variable">-r</span> <span class="token parameter variable">-v</span> <span class="token parameter variable">--list</span> <span class="token string">'origin/feature/*'</span> <span class="token string">'origin/demo/*'</span>     <span class="token comment"># 先看清單，記下 commit</span>
+<span class="token function">git</span> branch <span class="token parameter variable">-r</span> <span class="token parameter variable">--list</span> <span class="token string">'origin/feature/*'</span> <span class="token string">'origin/demo/*'</span> <span class="token operator">|</span> <span class="token function">sed</span> <span class="token string">'s|origin/||'</span> <span class="token operator">|</span> <span class="token function">xargs</span> <span class="token function">git</span> push origin <span class="token parameter variable">--delete</span>
+
+<span class="token comment"># 3. 刪除本機的同名分支</span>
+<span class="token function">git</span> branch <span class="token parameter variable">-v</span> <span class="token parameter variable">--list</span> <span class="token string">'feature/*'</span> <span class="token string">'demo/*'</span>
+<span class="token function">git</span> branch <span class="token parameter variable">--list</span> <span class="token string">'feature/*'</span> <span class="token string">'demo/*'</span> <span class="token operator">|</span> <span class="token function">xargs</span> <span class="token function">git</span> branch <span class="token parameter variable">-D</span>
+
+<span class="token comment"># 4. 確認只剩 develop 與 main</span>
+<span class="token function">git</span> branch <span class="token parameter variable">-a</span>
+</code></pre><ul>
+<li>刪錯可用記下的 commit 重建；<code>temp/</code>、生成物、<code>ai-dev-tools/</code> <strong>不需要清理</strong></li>
+<li>下一輪：<code>git checkout -b demo/run-2 demo-baseline</code></li>
+</ul>
+<hr>
+<p><strong>Step 6 / 7 · Wrap Up the Lessons</strong></p>
+<h2 id="6-收尾ai-能做到哪裡由權限決定">6. 收尾：AI 能做到哪裡，由權限決定 </h2>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>AI（hook）：分析 diff → 產生 message
+            ├─ 工作區允許 git：直接 commit + push
+            └─ 權限被拒：停止，提示人執行收尾腳本
+人（終端機）：看檔案清單 → 按 y → commit + push
+</code></pre><ul>
+<li>prompt 不預設 AI 能不能執行 git，由工作區權限決定</li>
+<li><strong>任何權限下都禁止</strong>：<code>echo y | ...</code>、<code>push --force</code>、<code>--no-verify</code>、改 git config</li>
+<li>不可逆、影響共享狀態的動作（push、merge、deploy）由人決定權限</li>
+</ul>
+<blockquote>
+<p>這條線畫在哪裡，是設計每個 hook 時最重要的決定。</p>
+</blockquote>
+<hr>
+<h2 id="實戰中的三個把關點">實戰中的三個把關點 </h2>
+<table>
+<thead>
+<tr>
+<th>把關點</th>
+<th>為什麼不能交給 AI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>審規格書待確認事項、Issue 拆分</td>
+<td>需求是所有人的共識；出錯的模型 ID 就在這裡被問過</td>
+</tr>
+<tr>
+<td>確認 PR 的 base、按下 Merge</td>
+<td>AI 的提示寫的是 <code>develop</code></td>
+</tr>
+<tr>
+<td>真實呼叫外部服務、判斷結果</td>
+<td>環境、權限、模型版本只有真實執行才會暴露</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="七條設計原則">七條設計原則 </h2>
+<ol>
+<li><strong>Runner 是 prompt 編譯器</strong>：可以不呼叫 AI 就被測試</li>
+<li><strong>約定優於設定</strong>：檔案存在即註冊</li>
+<li><strong>介面要窄</strong>：環境變數進、stdout 出</li>
+<li><strong>事實來源要明確</strong>：規範屬於專案、現況由程式收集、契約先於實作</li>
+<li><strong>指令在前、資料在後</strong>，資料要標示清楚</li>
+<li><strong>一定要有 dry-run</strong>：看得到才除錯得了、審得了</li>
+<li><strong>AI 準備，人確認</strong>：不可逆的動作留給人</li>
+</ol>
+<hr>
+<p><strong>Step 7 / 7 · Extend It to the Organization</strong></p>
+<h1 id="7-延伸討論">7. 延伸討論 </h1>
+<h2 id="導入-ai-是組織管理的問題">導入 AI 是組織管理的問題 </h2>
+<hr>
+<h2 id="ai-sdlc-的本質開發流程的流水線">AI-SDLC 的本質：開發流程的流水線 </h2>
+<table>
+<thead>
+<tr>
+<th>流水線的特徵</th>
+<th>AI-SDLC 的對應</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>工序切成固定的站</td>
+<td>需求 → Issue → 實作 → 測試 → PR</td>
+</tr>
+<tr>
+<td>每一站有標準作業</td>
+<td>hook 的 prompt、範本、steering</td>
+</tr>
+<tr>
+<td>半成品有規格</td>
+<td>規格書、Issue front matter、API 契約</td>
+</tr>
+<tr>
+<td>品管站把關</td>
+<td>測試全綠、lint、人工審查</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>DORA 2025：AI 是<strong>放大器</strong>，放大好組織的優勢，也放大壞組織的問題 [6]</li>
+<li>McKinsey：「重新設計工作流程」是與 AI 獲利關聯最大的因素 [3]</li>
+</ul>
+<hr>
+<h2 id="歷史對照手工紡織--機械紡織">歷史對照：手工紡織 → 機械紡織 </h2>
+<table>
+<thead>
+<tr>
+<th>紡織業</th>
+<th>軟體開發</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>手工織工</td>
+<td>每個人用自己的方式跟 AI 開發</td>
+</tr>
+<tr>
+<td>機械織布機</td>
+<td>AI 代理人</td>
+</tr>
+<tr>
+<td>工廠的標準工序</td>
+<td>AI-SDLC</td>
+</tr>
+<tr>
+<td>機械工程師、工廠管理者</td>
+<td>設計流程與 hook、定義把關點的人</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>電力的例子：工廠只換電動機、沿用舊配置，生產力不升；<strong>重新設計流程後</strong>效益才出現，落差長達數十年 [1]</li>
+<li>機器本身不帶來好處，<strong>工序的重新設計才會</strong></li>
+<li>衝擊落在人身上，而且不平均</li>
+</ul>
+<hr>
+<h2 id="用-roi-評估導入">用 ROI 評估導入 </h2>
+<ul>
+<li>McKinsey 2025-11：只有 39% 表示 AI 對整體獲利有影響 [4]</li>
+<li>生產力 J 曲線：需要大量無形的互補投資，<strong>初期看起來反而下降</strong> [2]</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>成本（不只授權費）</th>
+<th>效益（不只寫得快）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>工具與 token 費用</td>
+<td>一致性</td>
+</tr>
+<tr>
+<td>流程與工具建置</td>
+<td>教育與監督成本下降</td>
+</tr>
+<tr>
+<td>教育訓練</td>
+<td>交付週期</td>
+</tr>
+<tr>
+<td><strong>審查時間</strong></td>
+<td>品質（覆蓋率、缺陷、返工）</td>
+</tr>
+<tr>
+<td><strong>失敗成本</strong></td>
+<td>文件完整度</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>先量基準再導入、算總成本、小範圍試行。</p>
+</blockquote>
+<hr>
+<h2 id="員工的重新定位">員工的重新定位 </h2>
+<p>工作沒有消失，而是<strong>從「做」移向「定義、審查與判斷」</strong></p>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>導入後主要在做什麼</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全體成員</td>
+<td>一起審查規格書與 Issue</td>
+</tr>
+<tr>
+<td>資淺工程師</td>
+<td>親自執行整合測試，從 request / response 掌握功能</td>
+</tr>
+<tr>
+<td>資深工程師</td>
+<td>設計流程與規範、最後驗收</td>
+</tr>
+<tr>
+<td>新角色：流程維護者</td>
+<td>維護 hook、範本、steering、工具集</td>
+</tr>
+</tbody>
+</table>
+<p><strong>員工的三個顧慮</strong> [12]</p>
+<table>
+<thead>
+<tr>
+<th>顧慮</th>
+<th>AI-SDLC 的回應</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>不確定 AI 會做什麼</td>
+<td><code>--dry-run</code> 公開 prompt；scratchpad 公開每一輪</td>
+</tr>
+<tr>
+<td>害怕被取代</td>
+<td>明確定義每個角色的把關點</td>
+</tr>
+<tr>
+<td>害怕看起來能力不足</td>
+<td>把「審查 AI 產出」「判斷真實結果」列為正式工作與評量項目</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="組織的重新定位">組織的重新定位 </h2>
+<table>
+<thead>
+<tr>
+<th>面向</th>
+<th>要重新思考的問題</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>流程的擁有者</td>
+<td>誰能修改 hook 與範本？</td>
+</tr>
+<tr>
+<td>權限與治理</td>
+<td>AI 能直接 push 到哪些分支？</td>
+</tr>
+<tr>
+<td>責任歸屬</td>
+<td>AI 產出的程式出問題，誰負責？</td>
+</tr>
+<tr>
+<td>評量方式</td>
+<td>看需求品質、審查品質，不只看產量</td>
+</tr>
+<tr>
+<td>知識保存</td>
+<td>規範寫進 steering，人員流動時不會帶走</td>
+</tr>
+<tr>
+<td>中階主管</td>
+<td>需要明確的授權與支援 [10]</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>AI-SDLC 改變的是生產方式，不只是工具。</strong></p>
+</blockquote>
+<hr>
+<h2 id="討論題">討論題 </h2>
+<ol>
+<li>你的團隊在 AI 等級 1–5 的哪裡？缺的是技術，還是流程與管理？</li>
+<li>提案導入時，你會量哪三個基準指標？</li>
+<li>哪種工作最可能被 AI 取代？做這份工作的人下一步往哪走？</li>
+<li>資淺工程師不再親手寫大部分程式，要靠什麼累積能力？</li>
+<li>AI 產出的程式造成事故，責任怎麼分配？防線加在哪？</li>
+<li>盧德運動反對的是機器，還是機器帶來的分配改變？</li>
+</ol>
+<hr>
+<h2 id="參考文獻節錄">參考文獻（節錄） </h2>
+<ol>
+<li>Paul A. David. "The Dynamo and the Computer." <em>AER</em>, 1990.</li>
+<li>Brynjolfsson, Rock, Syverson. "The Productivity J-Curve." NBER, 2018.</li>
+<li>McKinsey. "The state of AI: How organizations are rewiring to capture value." 2025-03.</li>
+<li>McKinsey. "The state of AI in 2025." 2025-11.</li>
+<li>Google DORA. "2025 State of AI-assisted Software Development."</li>
+<li>HBR. "AI Adoption Is Overloading Your Middle Managers." 2026-06.</li>
+<li>HBS AI Institute. "The People, Processes, and Politics of AI ROI." 2026.</li>
+</ol>
+<p>完整清單與連結見 <a href="./AI-SDLC-%E5%AF%A6%E6%88%B0%E8%AA%B2%E7%A8%8B.md">AI-SDLC-實戰課程.md §7.7</a></p>
+<hr>
+<h1 id="qa">Q&amp;A </h1>
+<p><strong>AI 準備，人確認。</strong><br>
+照著流程走，就是照著規範做。</p>
+<hr>
+<h1 id="做完了然後呢">做完了，然後呢？ </h1>
+<h2 id="讓作品上線ez-deploy">讓作品上線：EZ-Deploy </h2>
+<p>用 AI-SDLC 做出的作品，下一步是<strong>讓別人用得到</strong>。</p>
+<ul>
+<li>不用自己架伺服器，也不用處理複雜的部署</li>
+<li>把網頁檔案上傳到平台，就能產生瀏覽連結，直接分享給客戶、同事或合作夥伴</li>
+<li>作品頁、活動頁、產品介紹頁、臨時測試頁，都可以快速發布、隨時更新</li>
+<li>提供 Email 通知服務：表單送出就寄信，不必自己寫寄信後端（範例：<code>uniheart-tw/EZ-Deploy-demo</code> 點餐系統）</li>
+</ul>
+<p><strong>官方網站（可免費試用）</strong>：<a href="https://shop.uniheart.com.tw/">https://shop.uniheart.com.tw/</a></p>
+<hr>
+<h2 id="ez-deploy-教學影片">EZ-Deploy 教學影片 </h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">拖拉上傳，作品直接上線</th>
+<th style="text-align:center">解鎖付費功能，讓作品可以收費</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><a href="https://youtu.be/LTV4pbzrEnM"><img src="https://i.ytimg.com/vi/LTV4pbzrEnM/hqdefault.jpg" alt="EZ-Deploy 基本使用教程"></a></td>
+<td style="text-align:center"><a href="https://youtu.be/-QqIpKLV-5Y"><img src="https://i.ytimg.com/vi/-QqIpKLV-5Y/hqdefault.jpg" alt="EZ-Deploy 付費解鎖功能"></a></td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>EZ-Deploy 基本使用教程</strong></td>
+<td style="text-align:center"><strong>EZ-Deploy 付費解鎖功能</strong></td>
+</tr>
+<tr>
+<td style="text-align:center"><a href="https://youtu.be/LTV4pbzrEnM">https://youtu.be/LTV4pbzrEnM</a></td>
+<td style="text-align:center"><a href="https://youtu.be/-QqIpKLV-5Y">https://youtu.be/-QqIpKLV-5Y</a></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>從<strong>做出來</strong>、<strong>放上去</strong>，到<strong>收得到錢</strong>：一個人也能把想法變成產品。</p>
+</blockquote>
+<p><strong>官方網站</strong>：<a href="https://shop.uniheart.com.tw/">https://shop.uniheart.com.tw/</a></p>
+
+      </div>
+      
+      
+    
+    
+    <script type="module">
+// TODO: If ZenUML gets integrated into mermaid in the future,
+//      we can remove the following lines.
+
+
+var MERMAID_CONFIG = ({"startOnLoad":false});
+if (typeof MERMAID_CONFIG !== 'undefined') {
+  MERMAID_CONFIG.startOnLoad = false
+  MERMAID_CONFIG.cloneCssStyles = false
+  MERMAID_CONFIG.theme = "default"
+}
+
+mermaid.initialize(MERMAID_CONFIG || {})
+if (typeof(window['Reveal']) !== 'undefined') {
+  function mermaidRevealHelper(event) {
+    var currentSlide = event.currentSlide
+    var diagrams = currentSlide.querySelectorAll('div.mermaid')
+    for (var i = 0; i < diagrams.length; i++) {
+      var diagram = diagrams[i]
+      if (!diagram.hasAttribute('data-processed')) {
+        mermaid.init(null, diagram, ()=> {
+          Reveal.slide(event.indexh, event.indexv)
+        })
+      }
+    }
+  }
+  Reveal.addEventListener('slidetransitionend', mermaidRevealHelper)
+  Reveal.addEventListener('ready', mermaidRevealHelper)
+  await mermaid.run({
+    nodes: document.querySelectorAll('div.mermaid')
+  })
+} else {
+  await mermaid.run({
+    nodes: document.querySelectorAll('div.mermaid')
+  })
+}
+</script>
+    
+    
+    
+  
+    </body></html>
