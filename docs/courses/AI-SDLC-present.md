@@ -490,113 +490,319 @@ my-flask-project/          ← REPO_ROOT（規範、現況、AI 的工作目錄�
 
 上傳逐字稿 → Bedrock（Claude）彙整摘要與與會者 → SES 寄信通知
 
+所有指令都在 **repo 根目錄**執行
+
 ---
 
-## 全貌
+## 全貌：0 → 10 共 11 個步驟
 
 ```mermaid
 flowchart LR
     S0["0 展示分支"] --> S1["1 需求"]
-    S1 -->|git-issues| S2["2 規格書<br/>+ Issue 草稿"]
+    S1 -->|git-issues| S2["2 規格書<br/>Issue 草稿"]
     S2 -->|upload| S3["3 GitHub<br/>Issues"]
     S3 -->|git-issue-resolve| S4["4 AI 實作"]
     S4 -->|pr-message| S5["5 PR"]
-    S5 -->|人工 Merge| S6["6 合併"]
+    S5 -->|人工| S6["6 合併"]
     S6 --> S7["7 API Test First"]
     S7 --> S8["8 生成測試"]
-    S8 --> S9["9 整合測試<br/>--otel / --stub"]
+    S8 --> S9["9 整合測試"]
+    S9 --> S10["10 清除"]
 ```
 
-所有 PR 都合併進展示分支 `demo/run-1`，不碰 `develop`。
+| 步驟 | 指令 | 人要確認 |
+|:---:|------|---------|
+| 0 | `git checkout -b demo/run-1 demo-baseline` | 起點是乾淨的基準 |
+| 2 | `hook git-issues` | 待確認事項、Issue 拆分 |
+| 3 | `upload-issues.sh --dry-run` | 上傳清單 |
+| 4 | `hook git-issue-resolve <N>` | diff、測試結果 |
+| 5–6 | `hook pr-message demo/run-1` | **base 是 `demo/run-1`**、按下 Merge |
+| 8–9 | `run.sh`、`flask_function_wrapper.py` | **真實呼叫是否正常** |
 
 ---
 
-## 步驟 1–3：需求 → 規格書 → Issue
+## 開場前：確認環境
 
 ```bash
-hook git-issues --dry-run    # 先看 AI 會收到什麼
-hook git-issues              # 產生規格書與 Issue 草稿
-bash ai-dev-tools/gh-issue/scripts/upload-issues.sh --dry-run
+source .venv/bin/activate                                  # Python 虛擬環境
+alias hook='bash ai-dev-tools/scripts/hooks/kiro-hook-run.sh'
+
+gh auth status                                             # GitHub 已登入
+kiro-cli whoami                                            # Kiro 已登入
+hook --list                                                # 列出 git-issues、git-issue-resolve…
+hook commit-message --dry-run | head -20                   # 只組 prompt，不呼叫 AI、不動 git
+ls -l .kiro/steering/                                      # api-first-workflow.md 存在
+git check-ignore -v ai-dev-tools                           # 工具集被 .gitignore 排除
 ```
 
-- 需求用口語寫：兩個 API `/api/meeting-minute`、`/api/notify`
-- 規格書 10 個章節；Issue 依 EARS 寫驗收條件
-- 本次拆成 5 個 Issue：infra、API 文件、兩個 backend、frontend
-
-**人要確認**
-1. 規格書第 9 節「待確認事項」：本次第 1 項就是後來出錯的**模型 ID**
-2. Issue 拆分與依賴順序
-3. label、milestone 沒有亂開
+- 安裝步驟見 README「安裝設定」1–8
+- `--dry-run` 先確認 Runner 抓到的現況與規範是否正確
 
 ---
 
-## 步驟 4–6：實作 → PR → 合併
+## 步驟 0：切換展示分支
 
 ```bash
-hook git-issue-resolve 1          # 切分支、迭代實作、commit/push
-hook pr-message demo/run-1        # 建立 PR（只建立，不合併）
+# 從遠端（origin）把所有 tag 抓到本機
+git fetch --tags
+# 用 demo-baseline 這個 tag 當起點
+git checkout -b demo/run-1 demo-baseline
+git push -u origin demo/run-1
 ```
 
-- AI 切出 `feature/infra/issue-1`，在 `scratchpad.md` 記錄每一輪
-- PR 自動寫上 `Closes #1`、分類變更、套用 label
-- **Merge 由人在 GitHub 上按下**
-
-**實戰教訓**
-- AI 完成時提示 `pr-message develop`，照做就把 PR 開到開發分支
-- 合併進非預設分支時，Issue **不會**自動關閉
-- 合併後本機要 `git pull`，否則下一個 Issue 缺內容
+- `demo-baseline` 是事先打好的基準 tag（README 第 9 步 (1)）
+- 每次展示從它開一條新分支，`develop` 永遠保持乾淨
+- 之後所有 PR 都合併進 `demo/run-1`，**不要合進 `develop`**
+- `git-issue-resolve` 從**目前分支**切出 feature 分支：實作前一定要在 `demo/run-1`
 
 ---
 
-## 步驟 7：複雜的 Issue 用 API Test First
+## 步驟 1：撰寫需求 `temp/user_reps/request.md`
+
+用口語寫就好，不需要寫成規格：
+
+- 上傳會議記錄，用 Claude 彙整（附上完整的彙整提示詞）
+- `POST /api/meeting-minute`：傳入檔案，回傳會議摘要與與會者（姓名、Email）
+- `POST /api/notify`：傳入摘要與與會者，用 AWS SES（`ap-southeast-1`）寄信
+- 「本機有設定好的 AWS profile，不用考慮權限問題」
+
+**要注意**
+- `git-issues` 會讀 `temp/user_reps/` 底下**所有** `.md`：只留這一輪的需求檔
+- `temp/` 不進版控，要重複使用的需求請另外備份
+- 指定模型時，要確認該模型在使用的區域可用（步驟 9 會看到）
+
+---
+
+## 步驟 2：生成規格書並切割 Issue
 
 ```bash
-python $T/lint-endpoints.py       # 端點文件符合範本
-python $T/build-reference.py      # 合併 → API_REFERENCE.md
-python $T/md-to-openapi.py        # → openapi.yaml
-python $T/validate-openapi.py     # 驗證
+hook git-issues --dry-run | less     # 先看 AI 會收到什麼（不呼叫 AI、不動 git）
+hook git-issues                      # 實際執行
 ```
 
-| 層 | 本次產出 |
+| 任務 | 範本 | 產出 |
+|------|------|------|
+| 1. 需求 → 規格書（10 章節） | `user_requirement.md` | `temp/user_reps_report/system_requirement_<日期>.md` |
+| 2. 規格書 → Issue 草稿 | `feature_request_ears.md` | `temp/github-issues/NN-<名稱>.md` |
+
+- 每個 Issue 有 front matter（title、labels、milestone）與 EARS 驗收條件
+- Milestone 依規格書第 8 節；label 只用現有的，缺的寫在「建議新增 Label」
+
+**人要確認**：規格書第 9 節「待確認事項」、Issue 拆分與依賴順序、label 與 milestone
+
+---
+
+## 步驟 3：上傳 Issue
+
+```bash
+bash ai-dev-tools/gh-issue/scripts/upload-issues.sh --dry-run   # 先看會建立什麼
+bash ai-dev-tools/gh-issue/scripts/upload-issues.sh             # 確認後正式上傳
+gh issue list
+```
+
+1. 掃描「建議新增 Label」，加進快照
+2. 建立 GitHub 上缺少的 label、milestone
+3. 依檔名順序建立 Issue（`01-…` 成為 #1）
+
+- **Issue 與 PR 共用同一組編號**：Issue 是 #1～#5，PR 就從 #6 開始
+- 不需要事先 `gh label create`
+
+---
+
+## 步驟 4：依 Issue 實作
+
+```bash
+git branch --show-current            # 必須在 demo/run-1
+hook git-issue-resolve 1 --dry-run   # 確認抓到 Issue 內容、沒有 steering 警告
+hook git-issue-resolve 1             # 可一次給多個編號：hook git-issue-resolve 1 2
+```
+
+AI 的步驟：
+1. 切分支 `feature/{type}/issue-N`（type 依 label：backend / frontend / infra / docs）
+2. 建立 `PROMPT.md`（含 Completion Criteria）與 `scratchpad.md`
+3. 啟動 harness 迭代，最多 10 輪，出現 `LOOP_COMPLETE` 結束
+4. commit（含 `Closes #N`）→ push
+
+```bash
+cat ai-dev-tools/harness-engineering/issues/issue-1/scratchpad.md   # AI 每一輪做了什麼
+git diff demo/run-1 --stat
+```
+
+---
+
+## 步驟 5：建立 PR
+
+```bash
+git branch --show-current            # 必須在 feature/infra/issue-1
+hook pr-message demo/run-1           # 參數就是 PR 的 base 分支
+```
+
+- 依範本產生描述，從分支名稱自動寫上 `Closes #1`
+- 依變更路徑判斷並套用 label（沒有的會自動建立）
+- `gh pr create --base demo/run-1 …`，完成後**切回 base 分支**
+- **只建立 PR，不會合併**
+
+> ⚠ AI 完成時提示的是 `pr-message develop`，**展示時不要照抄**：
+> 照做會把 PR 開到 `develop`，污染開發分支。
+
+---
+
+## 步驟 6：審核並合併
+
+在 GitHub 的 PR 頁面：看 **Files changed** → 確認 **base 是 `demo/run-1`** → Approve → **Merge**
+
+```bash
+gh issue close 1                     # 合併進非預設分支，Issue 不會自動關閉
+git checkout demo/run-1 && git pull  # 本機同步，否則下一個 Issue 缺內容
+```
+
+| 動作 | 結果 |
+|------|------|
+| Approve | 只是審核通過，PR 仍是 open |
+| Merge | 把 feature 分支合併進 base |
+
+**開錯 base 而且已合併**：在本機 `develop` 仍是基準時，`git push --force-with-lease origin develop` 還原遠端，再 `gh issue reopen <N>`（會改寫遠端歷史，先確認沒人在用）
+
+---
+
+## 步驟 7：API Test First，兩類 Issue 依序處理
+
+| 類型 | 常見標籤 | 本次 | 實作後要做什麼 |
+|------|---------|------|--------------|
+| 7.1 API spec 文件 | `documentation`、`backend` | #2 端點文件 | 跑 **API-First 工具鏈** |
+| 7.2 實作 API spec 的程式碼 | `backend` | #3 `/api/meeting-minute` | 做**步驟 8、9** |
+
+```mermaid
+flowchart LR
+    D["7.1 端點文件"] -->|工具鏈| O["openapi.yaml<br/>契約"]
+    O --> C["7.2 實作"]
+    C -->|步驟 8| T["生成測試"]
+    T -->|步驟 9| R["整合測試"]
+```
+
+```bash
+git checkout demo/run-1 && git pull  # 確認已包含前一個 Issue 的合併結果
+hook git-issue-resolve <N>           # 兩類都用同一個指令
+```
+
+---
+
+## 7.1 API spec 文件：跑 API-First 工具鏈
+
+```bash
+T=ai-dev-tools/scripts/apispec
+python $T/lint-endpoints.py      # 0. 端點文件是否符合 API_REFERENCE_TEMPLATE.md
+python $T/build-reference.py     # 1. endpoint/*.md + metadata.yaml → API_REFERENCE.md
+python $T/md-to-openapi.py       # 2. → openapi.yaml
+python $T/validate-openapi.py    # 3. 驗證 openapi.yaml
+```
+
+- `openapi.yaml` 是 7.2 實作要遵守的契約，也是 flask-he 生成整合測試的依據
+- `API_REFERENCE.md`、`openapi.yaml` 是生成物，**不手改**；要改就改 `endpoint/*.md` 再重跑
+- **人要確認**：端點、request / response 欄位、錯誤碼符合規格書
+
+---
+
+## 7.2 實作 API spec 的程式碼
+
+| 層 | 本次產出（`feature/backend/issue-3`） |
 |----|---------|
-| 路由 | `routes/meeting.py`：只做 HTTP 解析 |
-| 業務邏輯 | `services/meeting_service.py`：檔名、大小、編碼驗證 |
+| 路由 | `routes/meeting.py`：只做 HTTP 解析與錯誤對應 |
+| 業務邏輯 | `services/meeting_service.py`：檔名、副檔名、大小、編碼驗證 |
 | 外部服務 | `services/llm_service.py`：**唯一** import boto3 的模組 |
 | 契約 | `docs/api/endpoint/meeting.md` |
+| 測試 | `backend/tests/` 下的 pytest，LLM 一律 stub |
 
-> 契約和實作不一致，生成的測試就會失敗：這是**契約先於實作**的把關點。
+AI 說完成之後，還要做兩件事：
+
+1. **步驟 8**：依 `openapi.yaml` 生成單元與整合測試，契約和實作不一致就會失敗
+2. **步驟 9**：`--stub` 確認程式邏輯，再真實呼叫確認環境與外部服務
 
 ---
 
-## 步驟 8：生成單元與整合測試（flask-he）
+## 步驟 8-1：生成單元測試（flask-he）
+
+```bash
+bash ai-dev-tools/harness-engineering/flask-he/run.sh --list --kind unit                 # 對象與狀態
+bash ai-dev-tools/harness-engineering/flask-he/run.sh services.llm_service --kind unit   # 單一模組
+bash ai-dev-tools/harness-engineering/flask-he/run.sh --all --kind unit                  # 全部（跳過已完成）
+python ai-dev-tools/scripts/flask/validate_tests.py --all --kind unit                    # 品質檢查
+python ai-dev-tools/scripts/flask/generate_test_report.py --kind unit --with-report      # 執行並出報告
+```
+
+- 對象來自 `flask-he-config.yaml` 的 `unit.source_include`，一個 `.py` 一個對象
+- 狀態：✅ 完成、🔄 進行中、⛔ 停止、⬜ 未開始（⬜ 不代表沒有測試）
+- 外部服務（`external_stubs.patch`）由 conftest 自動換成假的，不會呼叫真實 AWS
+
+| 產物 | 位置 |
+|------|------|
+| 測試檔 | `backend/tests/unit/<模組路徑>/test_unit_<模組>.py` |
+| 報告 | `backend/tests/unit-test-case-report.md` |
+
+---
+
+## 步驟 8-2：生成整合測試（flask-he）
 
 ```bash
 bash ai-dev-tools/harness-engineering/flask-he/run.sh --list --kind integration
 bash ai-dev-tools/harness-engineering/flask-he/run.sh meeting-minute --kind integration
 python ai-dev-tools/scripts/flask/validate_tests.py meeting-minute --kind integration
+python ai-dev-tools/scripts/flask/generate_test_report.py --kind integration --with-report
 ```
 
-- 單元測試：一個模組一個對象；外部服務自動 stub
-- 整合測試：一個資源一個對象，一個請求檔一個 HTTP 請求
+- 資源 = URL 在 `/api` 之後的第一段（`/api/meeting-minute` → `meeting-minute`）
 - `--list` 的 ⚠ 提醒**契約有、實作沒有**的端點：API-First 讓落差被看見
-- 本次整合測試：5 passed、覆蓋率 83.3%
+- `docs/api/endpoint/` 只放本專案要實作的端點，範例放 `docs/api/examples/`
+
+| 產物 | 說明 |
+|------|------|
+| `requests/NN_MM_<說明>.json` | 一個檔一個 HTTP 請求 |
+| `event_hooks.json`／`.py` | 請求檔中 `{{名稱}}` 的值 |
+| `stubs.json` | 可 stub 的函式範本（給人與 AI 參考） |
 
 ---
 
 ## 步驟 9：同一個請求，三種模式
 
+```bash
+W=ai-dev-tools/scripts/flask/flask_function_wrapper.py
+python $W meeting-minute 01_01_summarize_meeting_minute.json                 # 真實呼叫
+python $W meeting-minute 01_01_summarize_meeting_minute.json --otel          # 真實呼叫 + 呼叫鏈
+python $W meeting-minute 01_01_summarize_meeting_minute.json --otel --stub   # 固定回傳值
+```
+
 | 模式 | 外部服務 | 耗時 | 用途 |
 |------|---------|:---:|------|
-| 不加參數 | **真實呼叫** Bedrock | 約 50 秒 | 確認 LLM 真的能用 |
-| `--otel` | 真實呼叫 + 呼叫鏈 | 相近 | 看時間花在哪 |
-| `--otel --stub` | 固定回傳值 | 約 8 毫秒 | 快速迴歸、看流程 |
+| 不加參數 | **真實呼叫** Bedrock | 數秒到數十秒 | 確認 LLM 真的能用 |
+| `--otel` | 真實呼叫＋呼叫鏈 | 相近 | 看時間花在哪 |
+| `--otel --stub` | `_stubs` 的固定值 | 毫秒級 | 快速迴歸、看流程 |
 
 ```
 🔭 Trace: POST /api/meeting-minute (8.50ms)
    └─ routes/meeting.py:meeting_minute
       └─ services/meeting_service.py:summarize
-         ├─ parse_meeting_date
          └─ 🔇 stub services.llm_service.generate_meeting_minute
+```
+
+---
+
+## 步驟 9：真實呼叫的前置條件與完整回應
+
+**缺一就會回 502**
+1. `.venv` 已安裝 `requirements.txt`（含 `boto3`）
+2. `.env` 的 `BEDROCK_MODEL_ID` 是該區域**可用**的模型
+3. `.env` 設定 `AWS_PROFILE`（flask-he 會清掉 shell 中 export 的 AWS 變數）
+
+- 同一個請求檔要在兩種模式都通過，`_expected` **只比對 `status`**：真實 LLM 每次輸出都不同
+- 真實逐字稿放 `temp/test/data/`，不進版控
+
+**看完整摘要**（wrapper 會截斷回應）
+
+```bash
+cd backend && python app.py                                                     # 終端機 1
+curl -s -F "file=@temp/test/data/20260918.txt" \
+  http://localhost:5001/api/meeting-minute -o temp/test/out.json                # 終端機 2
+python -c "import json; d=json.load(open('temp/test/out.json')); print(d['summary']); print(d['attendees'])"
 ```
 
 ---
@@ -605,15 +811,57 @@ python ai-dev-tools/scripts/flask/validate_tests.py meeting-minute --kind integr
 
 所有測試都綠燈，第一次真實執行卻連續撞到：
 
-| # | 錯誤 | 原因 |
-|---|------|------|
-| 1 | `ModuleNotFoundError` | `.venv` 沒裝 boto3（stub 時不會載入） |
-| 2 | `ResourceNotFoundException` | 需求指定的模型已下架 |
-| 3 | `AccessDeniedException` | IAM 禁止跨區推論、`AWS_PROFILE` 被清掉 |
-| 4 | `ValidationException` | 新模型不接受 `temperature`、回應格式不同 |
+| # | 錯誤 | 原因 | 測試為什麼沒抓到 |
+|---|------|------|---------------|
+| 1 | `ModuleNotFoundError` | `.venv` 沒裝 boto3 | stub 時不會載入 |
+| 2 | `ResourceNotFoundException` | 需求指定的模型已下架 | 模型只在真實呼叫時驗證 |
+| 3 | `AccessDeniedException` | IAM 禁止跨區推論、`AWS_PROFILE` 被清掉 | 權限只在真實呼叫時檢查 |
+| 4 | `ValidationException` | 新模型不接受 `temperature`、回應格式不同 | stub 回傳的是自己假設的格式 |
 
 > **stub 驗證程式邏輯，真實呼叫驗證環境與外部服務。**
 > 兩種都要跑，真實呼叫的結果由人判斷。
+
+---
+
+## 重複步驟 4～9：處理剩下的 Issue
+
+```bash
+git checkout demo/run-1 && git pull
+hook git-issue-resolve <N>
+# 檢視 scratchpad 與 diff
+# API spec 文件（7.1）：跑 API-First 工具鏈
+# 實作程式碼（7.2）：接著做步驟 8（生成測試）與步驟 9（整合測試、真實呼叫）
+hook pr-message demo/run-1
+# GitHub 上審核 → Merge
+gh issue close <N>
+```
+
+---
+
+## 步驟 10：清除分支，回到初始狀態
+
+```bash
+git checkout develop && git status --short                     # 先離開要刪的分支
+git fetch --prune                                              # 同步遠端分支清單
+
+# 1. 關閉所有 open Issue
+gh issue list --state open --json number,title --jq '.[] | "#\(.number) \(.title)"'   # 先看清單
+gh issue list --state open --json number --jq '.[].number' | xargs -I{} gh issue close {}
+
+# 2. 刪除遠端的展示分支與 feature 分支
+git branch -r -v --list 'origin/feature/*' 'origin/demo/*'     # 先看清單，記下 commit
+git branch -r --list 'origin/feature/*' 'origin/demo/*' | sed 's|origin/||' | xargs git push origin --delete
+
+# 3. 刪除本機的同名分支
+git branch -v --list 'feature/*' 'demo/*'
+git branch --list 'feature/*' 'demo/*' | xargs git branch -D
+
+# 4. 確認只剩 develop 與 main
+git branch -a
+```
+
+- 刪錯可用記下的 commit 重建；`temp/`、生成物、`ai-dev-tools/` **不需要清理**
+- 下一輪：`git checkout -b demo/run-2 demo-baseline`
 
 ---
 

@@ -911,7 +911,7 @@ flowchart TB
 | 4 | `hook git-issue-resolve 1` | GitHub Issue #1 | 內建 PROMPT 格式、steering | feature 分支、commit | diff、測試結果 |
 | 5 | `hook pr-message demo/run-1` | 分支差異 | `pull_request_template.md` | PR | **base 是 `demo/run-1`** |
 | 6 | （GitHub 網頁） | PR | — | 合併 commit | Approve 不等於 Merge |
-| 7 | `hook git-issue-resolve 3` | Issue #3 | steering `api-first-workflow.md` | 程式、端點文件、測試 | API 契約與實作一致 |
+| 7 | `hook git-issue-resolve <N>` | 7.1 API spec 文件（#2）、7.2 實作程式碼（#3） | steering `api-first-workflow.md`、`API_REFERENCE_TEMPLATE.md` | 7.1：端點文件＋`openapi.yaml`；7.2：程式與單元測試 | 7.1：契約符合規格書；7.2：接著做步驟 8、9 |
 | 8 | `flask-he/run.sh` | `flask-he-config.yaml`、openapi | flask-he PROMPT 範本 | `backend/tests/unit/`、`integration/` | 測試品質、覆蓋率 |
 | 9 | `flask_function_wrapper.py` | 請求檔 `requests/*.json` | — | 測試結果、trace | **真實呼叫是否正常** |
 | 10 | `git checkout develop` … | — | — | 乾淨的工作環境 | 不要誤刪要保留的紀錄 |
@@ -1275,16 +1275,31 @@ git pull
 
 ### 步驟 7：處理複雜的 Issue（backend）：API Test First
 
-Issue #3（`/api/meeting-minute` 與 LLM 服務）牽涉外部服務，適合示範 API Test First：**先有契約，再有測試，最後才是實作**。
+牽涉 API 的需求，`git-issues` 通常會拆成兩類 Issue，依序處理：**先有契約，再有測試，最後才是實作**。
 
-```bash
-git checkout demo/run-1 && git pull   # 確認已包含 #1、#2 的合併結果
-hook git-issue-resolve 3
+| 類型 | 常見標籤 | 本次範例 | 實作後要做什麼 |
+|------|---------|---------|--------------|
+| 7.1 API spec 文件 | `documentation`（docs）、`backend` | Issue #2：`/api/meeting-minute`、`/api/notify` 的端點文件 | 跑 **API-First 工具鏈**，產生並驗證 `openapi.yaml` |
+| 7.2 實作 API spec 的程式碼 | `backend` | Issue #3：`/api/meeting-minute` 與 LLM 服務 | 執行**步驟 8**（生成單元與整合測試）與**步驟 9**（整合測試） |
+
+```mermaid
+flowchart LR
+    D["7.1 API spec 文件<br/>docs/api/endpoint/*.md"] -->|API-First 工具鏈| O["openapi.yaml<br/>（契約）"]
+    O --> C["7.2 實作程式碼<br/>routes / services"]
+    C -->|步驟 8| T["生成單元與整合測試"]
+    T -->|步驟 9| R["整合測試<br/>stub / 真實呼叫"]
 ```
 
-#### 7.1 API-First 在這一步怎麼發生
+兩類都用同一個指令處理，差別只在 Issue 內容與後續要做的事：
 
-steering `.kiro/steering/api-first-workflow.md` 要求 AI 先改端點文件再改程式，並跑完工具鏈：
+```bash
+git checkout demo/run-1 && git pull   # 確認已包含前一個 Issue 的合併結果
+hook git-issue-resolve <N>
+```
+
+#### 7.1 API spec 文件：跑 API-First 工具鏈
+
+這類 Issue 的產出是端點文件 `docs/api/endpoint/*.md`，不含程式碼。steering `.kiro/steering/api-first-workflow.md` 要求 AI 依 `API_REFERENCE_TEMPLATE.md` 撰寫，並跑完工具鏈：
 
 ```bash
 T=ai-dev-tools/scripts/apispec
@@ -1294,7 +1309,13 @@ python $T/md-to-openapi.py       # 2. → docs/api/openapi.yaml
 python $T/validate-openapi.py    # 3. 驗證 openapi.yaml
 ```
 
-`openapi.yaml` 是下一步 flask-he 生成整合測試的依據。契約和實作不一致，生成的測試就會失敗，這就是「契約先於實作」的把關點。
+- `openapi.yaml` 是之後 flask-he 生成整合測試的依據，也是 7.2 實作時要遵守的契約。
+- `API_REFERENCE.md` 與 `openapi.yaml` 是生成物，**不手改**；要改契約就改 `docs/api/endpoint/*.md` 再重跑工具鏈。
+- **人要確認**：端點、request / response 欄位、錯誤碼是否符合規格書。契約一旦定下來，後面的測試與實作都以它為準。
+
+#### 7.2 實作 API spec 的程式碼：接著做步驟 8、9
+
+這類 Issue 依 7.1 的契約寫程式。AI 會先確認端點文件存在、必要時更新，再實作路由與服務，並寫單元測試（測試全綠才算完成）。
 
 本次 AI 的產出（`feature/backend/issue-3`）：
 
@@ -1305,6 +1326,11 @@ python $T/validate-openapi.py    # 3. 驗證 openapi.yaml
 | 外部服務 | `backend/services/llm_service.py`：唯一 import boto3 的模組，方便測試整塊替換 |
 | 契約 | `docs/api/endpoint/meeting.md` |
 | 測試 | `backend/tests/` 下的 pytest，LLM 一律 stub |
+
+AI 說完成之後，還要做兩件事：
+
+1. **步驟 8**：用 flask-he 依 `openapi.yaml` 生成單元與整合測試。契約和實作不一致時，生成的整合測試會失敗，這就是「契約先於實作」的把關點。
+2. **步驟 9**：用 `--stub` 確認程式邏輯，再真實呼叫外部服務，確認環境與服務真的可用。
 
 ### 步驟 8：生成單元與整合測試（flask-he）
 
@@ -1478,7 +1504,9 @@ python -c "import json; d=json.load(open('temp/test/out.json')); print(d['summar
 ```bash
 git checkout demo/run-1 && git pull
 hook git-issue-resolve <N>
-# 檢視 scratchpad 與 diff；backend 再補 flask-he 測試與真實呼叫
+# 檢視 scratchpad 與 diff
+# API spec 文件（7.1）：跑 API-First 工具鏈
+# 實作程式碼（7.2）：接著做步驟 8（生成測試）與步驟 9（整合測試、真實呼叫）
 hook pr-message demo/run-1
 # GitHub 上審核 → Merge
 gh issue close <N>
@@ -1488,22 +1516,40 @@ gh issue close <N>
 
 ### 步驟 10：清除分支，回到初始狀態
 
-依 [README](../../README.md) 第 9 步 (3)。重點：
+依 [README](../../README.md) 第 9 步 (3)。先切回 `develop`：Git 不能刪除目前所在的分支。
 
 ```bash
-git checkout develop                                           # 先離開要刪的分支
-git fetch --prune
-
-gh issue list --state open --json number --jq '.[].number' | xargs -I{} gh issue close {}
-
-git branch -r --list 'origin/feature/*' 'origin/demo/*'        # 先看清單
-git push origin --delete demo/run-1 feature/infra/issue-1 feature/docs/issue-2 feature/backend/issue-3
-git branch -D demo/run-1 feature/infra/issue-1 feature/docs/issue-2 feature/backend/issue-3
+git checkout develop
+git status --short                                             # 被追蹤的檔案應該是乾淨的
 ```
 
+接著清掉這一輪在 GitHub 與分支上留下的東西。指令不針對特定 Issue 或分支，每一輪都可以直接使用：
+
+```bash
+git fetch --prune                                              # 先同步遠端分支清單
+
+# 1. 關閉所有 open Issue
+gh issue list --state open --json number,title --jq '.[] | "#\(.number) \(.title)"'   # 先看清單
+gh issue list --state open --json number --jq '.[].number' | xargs -I{} gh issue close {}
+
+# 2. 刪除遠端的展示分支與 feature 分支
+git branch -r -v --list 'origin/feature/*' 'origin/demo/*'     # 先看清單，並記下每個分支的 commit
+git branch -r --list 'origin/feature/*' 'origin/demo/*' | sed 's|origin/||' | xargs git push origin --delete
+
+# 3. 刪除本機的同名分支
+git branch -v --list 'feature/*' 'demo/*'
+git branch --list 'feature/*' 'demo/*' | xargs git branch -D
+
+# 4. 確認只剩 develop 與 main
+git branch -a
+```
+
+- **刪除前先看清單**：第 2、3 步會刪掉清單中的**所有**分支。清單裡有要保留的展示紀錄時，改成逐一刪除（`git push origin --delete <分支>`、`git branch -D <分支>`）。
+- **刪錯了可以重建**：分支只是指向 commit 的名稱，commit 本身還在，用清單裡記下的 commit 重建即可（例如 `git branch demo/run-1 <commit> && git push -u origin demo/run-1`）。
+- 清單為空時，`xargs` 不會執行後面的指令，重複執行也沒有關係。
 - 本機被 `.gitignore` 排除的檔案（`temp/`、`docs/api/` 的兩個生成物、`ai-dev-tools/` 內的暫存）**不需要清理**，也**不要刪除 `ai-dev-tools/` 內的任何檔案**。
-- 換展示題材時，只要確認 `temp/user_reps/` 只留下一輪要用的需求檔。
-- 下一輪從 `git checkout -b demo/run-2 demo-baseline` 開始。Issue 編號無法歸零：本次 Issue 用到 #5、PR 用到 #8，下一輪的 Issue 會從 #9 開始。
+- 換展示題材時，只要確認 `temp/user_reps/` 只留下一輪要用的需求檔；展示中上傳過檔案的話，用 `rm -rf backend/uploads/*` 清掉（`.gitkeep` 不受影響）。
+- 下一輪從 `git checkout -b demo/run-2 demo-baseline` 開始。Issue 與 PR 的編號無法歸零，下一輪會接著上一輪的編號往下編。
 
 ---
 
