@@ -57,6 +57,9 @@ test_env:
     - SMTP_USER
     - SMTP_PASSWORD
     - MAIL_FROM
+    - AWS_PROFILE
+    - LLM_MODEL_ID
+    - SES_SENDER
     - OTEL_EXPORTER_OTLP_ENDPOINT
   env_set:
     OTEL_ENABLED: "0"
@@ -117,8 +120,12 @@ techniques:
 external_stubs:
   patch:                               # patch 成回傳 None：unit conftest 一律；integration 只在 wrapper --stub 時
     - services.mail_service.send_mail  # 寄信的唯一出口（外部服務只透過 services/ 單一模組呼叫，見 agent.md）
+    - services.llm_service.invoke_model   # LLM（Bedrock）外部服務
+    - services.ses_service.send_email     # SES 外部服務
   forbidden_imports:                   # 測試檔不得直接 import
     - smtplib
+    - boto3
+    - botocore
     - requests
     - socket
 
