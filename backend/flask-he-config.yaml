@@ -32,11 +32,10 @@ app:
   # 每個測試各自指到 tmp_path 的 config 屬性（測試之間互不影響）
   config_patches:
     UPLOAD_DIR: tmp_dir                # 會議紀錄上傳目錄（預設 backend/uploads）
-  config_overrides:                    # 測試時固定的值：指向本機假 SMTP，絕不連真實郵件伺服器
-    SMTP_HOST: localhost
-    SMTP_PORT: 1025
-    SMTP_USER: ""
-    SMTP_PASSWORD: ""
+  config_overrides:                    # 測試時固定的值，絕不連真實 AWS
+    BEDROCK_REGION: us-east-1
+    BEDROCK_MODEL_ID: test-model
+    SES_REGION: ap-southeast-1
     MAIL_FROM: meeting-bot@example.com
 
 # ── 測試執行環境（工具與 pytest 共用）────────────────────────────────────
@@ -51,11 +50,11 @@ test_env:
   data_dir: ${test_env.root}/session/data
   artifacts_dir: ${test_env.root}/artifacts        # junit.xml、coverage.json、.coverage 等暫存產物
   # 提醒：測試資料由各測試在 Arrange 階段自行建立，不預先載入。
-  env_unset:                           # 執行 pytest 前移除，避免打到真實 SMTP
-    - SMTP_HOST
-    - SMTP_PORT
-    - SMTP_USER
-    - SMTP_PASSWORD
+  env_unset:                           # 執行 pytest 前移除，避免打到真實 AWS
+    - AWS_PROFILE
+    - BEDROCK_REGION
+    - BEDROCK_MODEL_ID
+    - SES_REGION
     - MAIL_FROM
     - OTEL_EXPORTER_OTLP_ENDPOINT
   env_set:
@@ -116,9 +115,11 @@ techniques:
 # ── 外部服務 stub（測試中必須 mock，不得真的呼叫）──────────────────────
 external_stubs:
   patch:                               # patch 成回傳 None：unit conftest 一律；integration 只在 wrapper --stub 時
-    - services.mail_service.send_mail  # 寄信的唯一出口（外部服務只透過 services/ 單一模組呼叫，見 agent.md）
+    - services.llm_service.summarize_transcript  # Bedrock 呼叫的唯一出口
+    - services.mail_service.send_mail            # SES 寄信的唯一出口（外部服務只透過 services/ 單一模組呼叫，見 agent.md）
   forbidden_imports:                   # 測試檔不得直接 import
-    - smtplib
+    - boto3
+    - botocore
     - requests
     - socket
 
