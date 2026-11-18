@@ -1,0 +1,3 @@
+大家好，我是王小明，信箱 xiaoming@example.com。
+李小華：本週完成登入功能。
+決議：下週開始 Sprint 2。
