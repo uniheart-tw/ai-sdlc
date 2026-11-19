@@ -1,0 +1,9 @@
+{
+  "_test_technique": "error_guessing",
+  "_description": "POST /api/meeting-minute — 未帶 file 欄位回 400",
+  "_expected": {"status": 400, "json.error": "缺少檔案"},
+  "_hooks": [],
+  "method": "POST",
+  "path": "/api/meeting-minute",
+  "form": {"note": "no file"}
+}

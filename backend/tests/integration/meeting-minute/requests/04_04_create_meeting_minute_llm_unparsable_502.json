@@ -1,0 +1,10 @@
+{
+  "_test_technique": "state_transition",
+  "_description": "POST /api/meeting-minute — LLM 輸出無法解析回 502",
+  "_expected": {"status": 502, "json.error": "會議記錄產生失敗，請稍後再試"},
+  "_hooks": [],
+  "_stubs": [{"target": "services.llm_service.invoke_model", "return_value": "not json at all"}],
+  "method": "POST",
+  "path": "/api/meeting-minute",
+  "files": {"file": "tests/data/20261118.txt"}
+}

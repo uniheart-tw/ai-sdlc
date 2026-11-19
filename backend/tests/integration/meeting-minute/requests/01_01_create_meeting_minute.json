@@ -1,0 +1,10 @@
+{
+  "_test_technique": "equivalence",
+  "_description": "POST /api/meeting-minute — 合法轉寫檔且 LLM 回傳有效 JSON 回 200",
+  "_expected": {"status": 200, "json.meeting_date": "2026-11-18", "json.summary": "## 決議事項", "json.attendees.0.name": "王小明", "json.attendees.1.email": ""},
+  "_hooks": ["fixed"],
+  "_stubs": [{"target": "services.llm_service.invoke_model", "return_value": "```json\n{\"summary\": \"## 決議事項\", \"attendees\": [{\"name\": \"王小明\", \"email\": \"xiaoming@example.com\"}, {\"name\": \"李小華\", \"email\": null}, {\"name\": \"  \", \"email\": \"\"}]}\n```"}],
+  "method": "POST",
+  "path": "/api/meeting-minute",
+  "files": {"file": "tests/data/20261118.txt"}
+}

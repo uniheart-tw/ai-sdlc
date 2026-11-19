@@ -1,0 +1,210 @@
+{
+  "resource": "meeting-minute",
+  "generated_by": "ai-dev-tools/scripts/flask/generate_stubs.py",
+  "description": "meeting-minute 資源各端點的呼叫鏈與可 stub 的 target（參考範本；wrapper 執行時不讀取）",
+  "_stubs_usage": "從 common／endpoints[].invoke_functions 挑選 target，複製到請求檔的 _stubs，參考 return_value／returns／returns_doc 填寫 return_value；執行 wrapper 時加 --stub。return_value 為靜態推斷值：\"<名稱>\" 表示值來自該變數／運算式（需自行填入），null 表示推不出（如物件方法的回傳）。",
+  "_stubs_example": [
+    {
+      "target": "config.require_llm_config",
+      "return_value": {
+        "profile": "<value>",
+        "region": "<value>",
+        "model_id": "<value>"
+      }
+    },
+    {
+      "target": "routes.meeting_minute._error",
+      "return_value": [
+        null
+      ]
+    }
+  ],
+  "common": {
+    "hooks": [],
+    "invoke_functions": []
+  },
+  "endpoints": [
+    {
+      "operation_id": "meeting_minute.create_meeting_minute",
+      "method": "POST",
+      "path": "/api/meeting-minute",
+      "view_function": "routes.meeting_minute.create_meeting_minute",
+      "file": "routes/meeting_minute.py",
+      "line": 35,
+      "invoke_functions": [
+        {
+          "target": "routes.meeting_minute._error",
+          "category": "route",
+          "depth": 1,
+          "called_from": "routes.meeting_minute.create_meeting_minute",
+          "signature": "_error(message: str, status: int)",
+          "doc": "",
+          "returns_doc": "",
+          "return_value": [
+            null
+          ],
+          "returns": [
+            "(jsonify({'error': message}), status)"
+          ],
+          "file": "routes/meeting_minute.py",
+          "line": 20
+        },
+        {
+          "target": "routes.meeting_minute._parse_date",
+          "category": "route",
+          "depth": 1,
+          "called_from": "routes.meeting_minute.create_meeting_minute",
+          "signature": "_parse_date(stem: str)",
+          "doc": "檔名主檔名須為合法 YYYYMMDD，否則回傳 None。",
+          "returns_doc": "",
+          "return_value": null,
+          "returns": [
+            "None",
+            "datetime.strptime(stem, '%Y%m%d').date()"
+          ],
+          "file": "routes/meeting_minute.py",
+          "line": 24
+        },
+        {
+          "target": "services.llm_service.generate_meeting_minute",
+          "category": "service",
+          "depth": 1,
+          "called_from": "routes.meeting_minute.create_meeting_minute",
+          "signature": "generate_meeting_minute(transcript: str, meeting_date: date)",
+          "doc": "彙整會議記錄；任何失敗一律拋出 LLMError。",
+          "returns_doc": "",
+          "return_value": {
+            "summary": "<summary>",
+            "attendees": []
+          },
+          "returns": [
+            "parse_result(raw)"
+          ],
+          "file": "services/llm_service.py",
+          "line": 91
+        },
+        {
+          "target": "services.llm_service.build_prompt",
+          "category": "service",
+          "depth": 2,
+          "called_from": "services.llm_service.generate_meeting_minute",
+          "signature": "build_prompt(transcript: str, meeting_date: date)",
+          "doc": "讀取提示詞範本並帶入會議日期與轉寫內容。",
+          "returns_doc": "",
+          "return_value": null,
+          "returns": [
+            "template.replace('{meeting_date}', meeting_date.strftime('%Y/%m/%d')).replace('{transcript}', transcript)"
+          ],
+          "file": "services/llm_service.py",
+          "line": 24
+        },
+        {
+          "target": "services.llm_service.invoke_model",
+          "category": "service",
+          "depth": 2,
+          "called_from": "services.llm_service.generate_meeting_minute",
+          "signature": "invoke_model(prompt: str)",
+          "doc": "以 Bedrock converse 呼叫模型，回傳文字輸出。外部服務唯一出口。",
+          "returns_doc": "",
+          "return_value": null,
+          "returns": [
+            "''.join((p.get('text', '') for p in parts))"
+          ],
+          "external": [
+            "aws: boto3.Session()",
+            "aws: client.converse()"
+          ],
+          "file": "services/llm_service.py",
+          "line": 32
+        },
+        {
+          "target": "services.llm_service.parse_result",
+          "category": "service",
+          "depth": 2,
+          "called_from": "services.llm_service.generate_meeting_minute",
+          "signature": "parse_result(raw)",
+          "doc": "驗證並正規化 LLM 輸出為 {summary, attendees}。",
+          "returns_doc": "",
+          "return_value": {
+            "summary": "<summary>",
+            "attendees": []
+          },
+          "returns": [
+            "{'summary': summary, 'attendees': result}"
+          ],
+          "file": "services/llm_service.py",
+          "line": 67
+        },
+        {
+          "target": "config.require_llm_config",
+          "category": "config",
+          "depth": 3,
+          "called_from": "services.llm_service.invoke_model",
+          "signature": "require_llm_config()",
+          "doc": "使用 Bedrock LLM 前呼叫；缺少設定時拋出 ConfigError。",
+          "returns_doc": "",
+          "return_value": {
+            "profile": "<value>",
+            "region": "<value>",
+            "model_id": "<value>"
+          },
+          "returns": [
+            "{'profile': require('AWS_PROFILE'), 'region': require('AWS_REGION'), 'model_id': require('LLM_MODEL_ID')}"
+          ],
+          "file": "config.py",
+          "line": 41
+        },
+        {
+          "target": "services.llm_service._extract_json",
+          "category": "service",
+          "depth": 3,
+          "called_from": "services.llm_service.parse_result",
+          "signature": "_extract_json(text: str)",
+          "doc": "從模型輸出取出 JSON 物件（容忍程式碼圍欄與前後文字）。",
+          "returns_doc": "",
+          "return_value": "<data>",
+          "returns": [
+            "data"
+          ],
+          "file": "services/llm_service.py",
+          "line": 46
+        },
+        {
+          "target": "config.require",
+          "category": "config",
+          "depth": 4,
+          "called_from": "config.require_llm_config",
+          "signature": "require(name: str)",
+          "doc": "取得必要的環境變數；未設定時拋出明確的 ConfigError。",
+          "returns_doc": "",
+          "return_value": "<value>",
+          "returns": [
+            "value"
+          ],
+          "file": "config.py",
+          "line": 20
+        },
+        {
+          "target": "config._get",
+          "category": "config",
+          "depth": 5,
+          "called_from": "config.require",
+          "signature": "_get(name: str, default: str | None=None)",
+          "doc": "",
+          "returns_doc": "",
+          "return_value": "<value>",
+          "returns": [
+            "value if value else default"
+          ],
+          "file": "config.py",
+          "line": 15
+        }
+      ]
+    }
+  ],
+  "external_stubs": [
+    "services.mail_service.send_mail",
+    "services.llm_service.invoke_model",
+    "services.ses_service.send_email"
+  ]
+}

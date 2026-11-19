@@ -1,0 +1,9 @@
+{
+  "_test_technique": "error_guessing",
+  "_description": "POST /api/meeting-minute — LLM 無輸出（None）回 502",
+  "_expected": {"status": 502},
+  "_hooks": [],
+  "method": "POST",
+  "path": "/api/meeting-minute",
+  "files": {"file": "tests/data/20261118.txt"}
+}

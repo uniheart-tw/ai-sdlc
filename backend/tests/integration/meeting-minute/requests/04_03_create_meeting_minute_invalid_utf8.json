@@ -1,0 +1,9 @@
+{
+  "_test_technique": "boundary",
+  "_description": "POST /api/meeting-minute — 非 UTF-8 檔案回 400",
+  "_expected": {"status": 400, "json.error": "檔案必須為 UTF-8 編碼"},
+  "_hooks": [],
+  "method": "POST",
+  "path": "/api/meeting-minute",
+  "files": {"file": "tests/data/invalid_utf8.txt"}
+}

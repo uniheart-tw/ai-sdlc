@@ -1,0 +1,9 @@
+{
+  "_test_technique": "decision_table",
+  "_description": "POST /api/meeting-minute — 副檔名非 .txt/.md 回 400",
+  "_expected": {"status": 400, "json.error": "僅接受 .txt 或 .md 檔案"},
+  "_hooks": [],
+  "method": "POST",
+  "path": "/api/meeting-minute",
+  "files": {"file": "tests/data/llm_response.json"}
+}
